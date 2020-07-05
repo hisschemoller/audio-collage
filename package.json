@@ -1,0 +1,13 @@
+{
+  "name": "audio-collage",
+  "version": "0.1.0",
+  "author": "Wouter Hisschemöller <info@hisschemoller.com>",
+  "description": "Generative audio collages with random samples.",
+  "license": "MIT",
+  "dependencies": {
+      "express": "^4.17.1"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
