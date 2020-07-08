@@ -9,6 +9,7 @@ export function setup() {
 }
 
 function addEventListeners() {
+  document.addEventListener(STATE_CHANGE, handleStateChanges);
   document.addEventListener('keydown', e => {
 
     // don't perform shortcuts while typing in a text input.
@@ -18,6 +19,17 @@ function addEventListeners() {
         // w
         case 87:
           console.log(getState());
+          break;
+
+        case 82: // r
+        case 83: // s
+        case 84: // t
+          // clear all data on key combination 'rst' (reset)
+          resetKeyCombo.push(e.keyCode);
+          if (resetKeyCombo.indexOf(82) > -1 && resetKeyCombo.indexOf(83) > -1 && resetKeyCombo.indexOf(84) > -1) {
+            localStorage.clear();
+            dispatch(getActions().newProject());
+          }
           break;
       }
     }

@@ -9,8 +9,27 @@
 </head>
 <body>
   <div id="controls">
-    
+
   </div>
+  <div id="dirs">
+    <h3>Audio folder locations</h3>
+    <button type="button" id="dirs__add">Add location</button>
+    <div id="dirs__header">
+      <span class="dir__">Path</span>
+      <span class="dir__">Disable</span>
+      <span class="dir__">Delete</span>
+    </div>
+    <div id="dirs__list"></div>
+  </div>
+
+	<template id="template-dir">
+		<div class="dir">
+			<span class="dir__label"></span>
+      <input type="checkbox" value="checked" class="dir__disable"></input>
+      <button type="button" class="dir__delete">x</button>
+		</div>
+  </template><!-- /template-setting-integer -->
+  
   <script src="js/main.js" type="module"></script>
 </body>
 </html>
