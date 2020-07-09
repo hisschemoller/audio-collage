@@ -44,9 +44,10 @@ app.get('/json', function (req, res) {
 
 // serve audio file
 app.get('/sound', (req, res) => {
-  const { dir, sound } = req.query;
-    const url = `${dir}${img}`;
-    res.sendFile(path.resolve(url));
+  const { dir, file } = req.query;
+  const url = `${decodeURIComponent(dir)}/${decodeURIComponent(file)}`;
+  console.log('path', url);
+  res.sendFile(path.resolve(url));
 });
 
 // receive an array of directory path strings

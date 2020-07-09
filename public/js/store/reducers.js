@@ -4,7 +4,14 @@ const initialState = {
     allIds: [],
     byId: {},
   },
+  settings: {
+    numTracks: 4,
+  },
   sounds: {
+    allIds: [],
+    byId: {},
+  },
+  tracks: {
     allIds: [],
     byId: {},
   },
@@ -97,7 +104,6 @@ export default function reduce(state = initialState, action, actions = {}) {
 
     case actions.GENERATE: {
       const { data } = action;
-      console.log('data', data);
       return {
         ...state,
         sounds: {
@@ -117,10 +123,15 @@ export default function reduce(state = initialState, action, actions = {}) {
           allIds: [],
           byId: {},
         },
+        settings: { ...initialState.settings },
         sounds: {
           allIds: [],
           byId: {},
         },
+        tracks: {
+          allIds: [],
+          byId: {},
+        }
       };
 
     case actions.SET_PROJECT:

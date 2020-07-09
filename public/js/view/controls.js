@@ -3,19 +3,13 @@ import { dispatch, getActions, getState, STATE_CHANGE, } from '../store/store.js
 let rootEl, generateBtn;
 let resetKeyCombo = [];
 
-export function setup() {
-  rootEl = document.querySelector('#controls');
-  generateBtn = rootEl.querySelector('#controls__generate');
-  addEventListeners();
-}
-
 function addEventListeners() {
   document.addEventListener(STATE_CHANGE, handleStateChanges);
 
   generateBtn.addEventListener('click', e => {
     dispatch(getActions().generate());
   });
-  
+
   document.addEventListener('keydown', e => {
 
     // don't perform shortcuts while typing in a text input.
@@ -48,4 +42,10 @@ function handleStateChanges(e) {
     case actions.ACTION:
       break;
   }
+}
+
+export function setup() {
+  rootEl = document.querySelector('#controls');
+  generateBtn = rootEl.querySelector('#controls__generate');
+  addEventListeners();
 }
