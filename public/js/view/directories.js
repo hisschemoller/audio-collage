@@ -35,7 +35,6 @@ function updateDirectories(state) {
       const template = document.querySelector('#template-dir');
       const clone = template.content.cloneNode(true);
       const el = clone.firstElementChild;
-      console.log(el);
       el.dataset.id = dirId;
       el.querySelector('.dir__path').value = path;
       el.querySelector('.dir__disable').checked = !isEnabled;
@@ -73,18 +72,20 @@ function handleStateChanges(e) {
     case actions.NEW_PROJECT:
     case actions.SET_PROJECT:
       updateDirectories(state);
+      uploadState(state);
       break;
     
     case actions.DIRECTORY_PATH_CHANGE:
     case actions.DIRECTORY_TOGGLE_ENABLE:
       updateDirectoriesContent(state);
+      uploadState(state);
       break;
   }
 }
 
 /**
  * Update the enabled state of each directory.
- * @param {Object} state 
+ * @param {Object} state Application state.
  */
 function updateDirectoriesContent(state) {
   const { directories, } = state;
@@ -93,5 +94,31 @@ function updateDirectoriesContent(state) {
     const dirEl = listEl.querySelector(`.dir[data-id="${dirId}"]`);
     dirEl.querySelector('.dir__disable').checked = !isEnabled;
     dirEl.querySelector('.dir__path').value = path;
+  });
+}
+
+/**
+ * Update the enabled state of each directory.
+ * @param {Object} state Application state.
+ */
+async function uploadState(state) {
+  const data = state.directories.allIds.reduce((accumulator, dirId) => {
+    const { path, isEnabled } = state.directories.byId[dirId];
+    if (isEnabled && path !== '') {
+      return [ ...accumulator, path ];
+    }
+    return [ ...accumulator ];
+  }, []);
+  console.log('data,', data);
+
+  const result = fetch('http://localhost:3015/paths', {
+    method: 'POST',
+    cache: 'no-cache',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    referrerPolicy: 'no-referrer',
+    body: JSON.stringify(data)
   });
 }
