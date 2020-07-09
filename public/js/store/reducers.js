@@ -4,6 +4,10 @@ const initialState = {
     allIds: [],
     byId: {},
   },
+  sounds: {
+    allIds: [],
+    byId: {},
+  },
 };
 
 /**
@@ -91,10 +95,29 @@ export default function reduce(state = initialState, action, actions = {}) {
       };
     }
 
+    case actions.GENERATE: {
+      const { data } = action;
+      console.log('data', data);
+      return {
+        ...state,
+        sounds: {
+          allIds: data.reduce((accumulator, sound) => [ ...accumulator, sound.id ], []),
+          byId: data.reduce((accumulator, sound) => ({ ...accumulator, [sound.id]: {
+            dir: sound.dir,
+            file: sound.file,
+          }}), {}),
+        }
+      }
+    }
+
     case actions.NEW_PROJECT:
       return { 
         ...initialState,
         directories: {
+          allIds: [],
+          byId: {},
+        },
+        sounds: {
           allIds: [],
           byId: {},
         },

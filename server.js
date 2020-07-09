@@ -17,6 +17,38 @@ app.listen(port, () => {
   console.log('listening on %d', port);
 });
 
+// serve file location data as JSON
+app.get('/json', function (req, res) {
+  const { amount, type } = req.query;
+  switch (type) {
+    case 'sound':
+      const data = [];
+      for (let i = 0, n = amount; i < n; i++) {
+          const fileIndex = Math.floor(Math.random() * numFiles);
+          allData.forEach(dirData => {
+            if (fileIndex >= dirData.startIndex && fileIndex < dirData.startIndex + dirData.audioFiles.length) {
+              data.push({
+                dir: dirData.dir,
+                file: dirData.audioFiles[fileIndex - dirData.startIndex]
+              });
+            }
+          });
+      }
+      res.json(data);
+      break;
+    case 'config':
+      res.json(config);
+        break;
+  }
+});
+
+// serve audio file
+app.get('/sound', (req, res) => {
+  const { dir, sound } = req.query;
+    const url = `${dir}${img}`;
+    res.sendFile(path.resolve(url));
+});
+
 // receive an array of directory path strings
 app.post('/paths', (req, res) => {
   console.log(req.body);
