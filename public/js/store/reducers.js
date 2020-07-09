@@ -23,7 +23,10 @@ export default function reduce(state = initialState, action, actions = {}) {
           allIds: [ ...state.directories.allIds, id, ],
           byId: { 
             ...state.directories.byId,
-            [id]: { path: '-', },
+            [id]: {
+              isEnabled: true,
+              path: '-',
+            },
           },
         },
       };
@@ -48,6 +51,25 @@ export default function reduce(state = initialState, action, actions = {}) {
           }, {}),
         },
       }
+    }
+
+    case actions.DIRECTORY_TOGGLE_ENABLE: {
+      const { id } = action;
+      return {
+        ...state,
+        directories: {
+          allIds: [ ...state.directories.allIds ],
+          byId: state.directories.allIds.reduce((accumulator, dirId) => {
+            if (dirId === id) {
+              return { ...accumulator, [dirId]: { 
+                ...state.directories.byId[dirId],
+                isEnabled: !state.directories.byId[dirId].isEnabled,
+              } };
+            }
+            return { ...accumulator, [dirId]: state.directories.byId[dirId] };
+          }, {}),
+        },
+      };
     }
 
     case actions.NEW_PROJECT:

@@ -39,6 +39,9 @@ function updateDirectories(state) {
       el.querySelector('.dir__delete').addEventListener('click', e => {
         dispatch(getActions().directoryRemove(dirId));
       });
+      el.querySelector('.dir__disable').addEventListener('click', e => {
+        dispatch(getActions().directoryToggleEnable(dirId));
+      });
       listEl.appendChild(el);
     }
   });
@@ -73,5 +76,21 @@ function handleStateChanges(e) {
     case actions.DIRECTORY_REMOVE:
       updateDirectories(state);
       break;
+    
+    case actions.DIRECTORY_TOGGLE_ENABLE:
+      updateDirectoryEnabled(state)
+      break;
   }
+}
+
+/**
+ * Update the enabled state of each directory.
+ * @param {Object} state 
+ */
+function updateDirectoryEnabled(state) {
+  const { directories, } = state;
+  directories.allIds.forEach(dirId => {
+    const { isEnabled } = directories.byId[dirId];
+    listEl.querySelector(`.dir[data-id="${dirId}"] .dir__disable`).checked = !isEnabled;
+  });
 }
