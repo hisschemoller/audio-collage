@@ -36,6 +36,9 @@ function updateDirectories(state) {
       const el = clone.firstElementChild;
       el.dataset.id = dirId;
       el.querySelector('.dir__label').textContent = directories.byId[dirId].path;
+      el.querySelector('.dir__delete').addEventListener('click', e => {
+        dispatch(getActions().directoryRemove(dirId));
+      });
       listEl.appendChild(el);
     }
   });
@@ -67,7 +70,7 @@ function handleStateChanges(e) {
   switch (action.type) {
 
     case actions.DIRECTORY_ADD:
-    case actions.DIRECTORY_ADD:
+    case actions.DIRECTORY_REMOVE:
       updateDirectories(state);
       break;
   }

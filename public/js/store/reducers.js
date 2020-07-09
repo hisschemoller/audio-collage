@@ -29,6 +29,27 @@ export default function reduce(state = initialState, action, actions = {}) {
       };
     }
 
+    case actions.DIRECTORY_REMOVE: {
+      const { id } = action;
+      return {
+        ...state,
+        directories: {
+          allIds: state.directories.allIds.reduce((accumulator, dirId) => {
+            if (dirId === id) {
+              return [ ...accumulator ];
+            }
+            return [ ...accumulator, dirId ];
+          }, []),
+          byId: state.directories.allIds.reduce((accumulator, dirId) => {
+            if (dirId === id) {
+              return { ...accumulator };
+            }
+            return { ...accumulator, [dirId]: state.directories.byId[dirId] };
+          }, {}),
+        },
+      }
+    }
+
     case actions.NEW_PROJECT:
       return { 
         ...initialState,
