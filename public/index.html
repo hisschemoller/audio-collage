@@ -15,16 +15,16 @@
     <h3>Audio folder locations</h3>
     <button type="button" id="dirs__add">Add location</button>
     <div id="dirs__header">
-      <span class="dir__path">Path</span>
-      <span class="dir__disable">Disable</span>
-      <span class="dir__delete">Delete</span>
+      <span class="dirs__header-path">Path</span>
+      <span class="dirs__header-disable">Disable</span>
+      <span class="dirs__header-delete">Delete</span>
     </div>
     <div id="dirs__list"></div>
   </div>
 
 	<template id="template-dir">
 		<div class="dir">
-			<span class="dir__label"></span>
+			<input type="text" class="dir__path"></input>
       <input type="checkbox" class="dir__disable"></input>
       <button type="button" class="dir__delete">x</button>
 		</div>

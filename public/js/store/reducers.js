@@ -25,9 +25,28 @@ export default function reduce(state = initialState, action, actions = {}) {
             ...state.directories.byId,
             [id]: {
               isEnabled: true,
-              path: '-',
+              path: '',
             },
           },
+        },
+      };
+    }
+
+    case actions.DIRECTORY_PATH_CHANGE: {
+      const { id, path } = action;
+      return {
+        ...state,
+        directories: {
+          allIds: [ ...state.directories.allIds ],
+          byId: state.directories.allIds.reduce((accumulator, dirId) => {
+            if (dirId === id) {
+              return { ...accumulator, [dirId]: { 
+                ...state.directories.byId[dirId],
+                path,
+              } };
+            }
+            return { ...accumulator, [dirId]: state.directories.byId[dirId] };
+          }, {}),
         },
       };
     }

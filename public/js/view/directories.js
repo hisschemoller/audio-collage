@@ -31,12 +31,20 @@ function updateDirectories(state) {
   // create all directories that don't exist yet
   directories.allIds.forEach(dirId => {
     if (!listEl.querySelector(`.dir[data-id="${dirId}"]`)) {
+      const { isEnabled, path } = directories.byId[dirId];
       const template = document.querySelector('#template-dir');
       const clone = template.content.cloneNode(true);
       const el = clone.firstElementChild;
+      console.log(el);
       el.dataset.id = dirId;
-      el.querySelector('.dir__label').textContent = directories.byId[dirId].path;
-      el.querySelector('.dir__disable').checked = !directories.byId[dirId].isEnabled;
+      el.querySelector('.dir__path').value = path;
+      el.querySelector('.dir__disable').checked = !isEnabled;
+      el.querySelector('.dir__path').addEventListener('keyup', e => {
+        if (e.keyCode === 13) {
+          e.target.blur();
+          dispatch(getActions().directoryPathChange(dirId, e.target.value));
+        }
+      });
       el.querySelector('.dir__delete').addEventListener('click', e => {
         dispatch(getActions().directoryRemove(dirId));
       });
@@ -67,8 +75,9 @@ function handleStateChanges(e) {
       updateDirectories(state);
       break;
     
+    case actions.DIRECTORY_PATH_CHANGE:
     case actions.DIRECTORY_TOGGLE_ENABLE:
-      updateDirectoryEnabled(state)
+      updateDirectoriesContent(state);
       break;
   }
 }
@@ -77,10 +86,12 @@ function handleStateChanges(e) {
  * Update the enabled state of each directory.
  * @param {Object} state 
  */
-function updateDirectoryEnabled(state) {
+function updateDirectoriesContent(state) {
   const { directories, } = state;
   directories.allIds.forEach(dirId => {
-    const { isEnabled } = directories.byId[dirId];
-    listEl.querySelector(`.dir[data-id="${dirId}"] .dir__disable`).checked = !isEnabled;
+    const { isEnabled, path } = directories.byId[dirId];
+    const dirEl = listEl.querySelector(`.dir[data-id="${dirId}"]`);
+    dirEl.querySelector('.dir__disable').checked = !isEnabled;
+    dirEl.querySelector('.dir__path').value = path;
   });
 }
