@@ -39,9 +39,10 @@ export function persist() {
   let data = localStorage.getItem(name);
   if (data && data !== 'undefined') {
     currentState = JSON.parse(data);
+    dispatch(actions.setProject(currentState));
   } else {
 
     // start with the initial state
-    dispatch({ type: null, });
+    dispatch(actions.newProject());
   }
 }

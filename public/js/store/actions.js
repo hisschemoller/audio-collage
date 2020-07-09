@@ -5,6 +5,7 @@ const DIRECTORY_ADD = 'DIRECTORY_ADD';
 const DIRECTORY_REMOVE = 'DIRECTORY_REMOVE';
 const DIRECTORY_TOGGLE_ENABLE = 'DIRECTORY_TOGGLE_ENABLE';
 const NEW_PROJECT = 'NEW_PROJECT';
+const SET_PROJECT = 'SET_PROJECT';
 
 // actions
 export default {
@@ -20,4 +21,7 @@ export default {
 
   NEW_PROJECT,
   newProject: () => ({ type: NEW_PROJECT }),
+  
+  SET_PROJECT,
+  setProject: state => ({ type: SET_PROJECT, state }),
 };

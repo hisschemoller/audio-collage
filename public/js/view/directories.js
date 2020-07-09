@@ -36,6 +36,7 @@ function updateDirectories(state) {
       const el = clone.firstElementChild;
       el.dataset.id = dirId;
       el.querySelector('.dir__label').textContent = directories.byId[dirId].path;
+      el.querySelector('.dir__disable').checked = !directories.byId[dirId].isEnabled;
       el.querySelector('.dir__delete').addEventListener('click', e => {
         dispatch(getActions().directoryRemove(dirId));
       });
@@ -53,19 +54,6 @@ function addEventListeners() {
   addBtn.addEventListener('click', e => {
     dispatch(getActions().directoryAdd());
   });
-  document.addEventListener('keydown', e => {
-
-    // don't perform shortcuts while typing in a text input.
-    if (!(e.target.tagName.toLowerCase() == 'input' && e.target.getAttribute('type') == 'text')) {
-      switch (e.keyCode) {
-        
-        // w
-        case 87:
-          console.log(getState());
-          break;
-      }
-    }
-  });
 }
 
 function handleStateChanges(e) {
@@ -74,6 +62,8 @@ function handleStateChanges(e) {
 
     case actions.DIRECTORY_ADD:
     case actions.DIRECTORY_REMOVE:
+    case actions.NEW_PROJECT:
+    case actions.SET_PROJECT:
       updateDirectories(state);
       break;
     

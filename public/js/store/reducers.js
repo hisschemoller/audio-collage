@@ -81,6 +81,9 @@ export default function reduce(state = initialState, action, actions = {}) {
         },
       };
 
+    case actions.SET_PROJECT:
+      return { ...state, ...action.state };
+
     default:
       return state ? state : initialState;
   }
