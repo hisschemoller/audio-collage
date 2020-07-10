@@ -110,7 +110,7 @@ async function uploadState(state) {
     return [ ...accumulator ];
   }, []);
 
-  const result = fetch('http://localhost:3015/paths', {
+  const result = fetch('/paths', {
     method: 'POST',
     cache: 'no-cache',
     credentials: 'same-origin',

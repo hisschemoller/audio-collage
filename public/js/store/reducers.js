@@ -5,7 +5,9 @@ const initialState = {
     byId: {},
   },
   settings: {
-    numTracks: 4,
+    loopDurationInSecs: 2,
+    numSamples: 4,
+    numTracks: 1,
   },
   sounds: {
     allIds: [],
@@ -103,7 +105,8 @@ export default function reduce(state = initialState, action, actions = {}) {
     }
 
     case actions.GENERATE: {
-      const { data } = action;
+      const { data, score } = action;
+      const { tracks } = score;
       return {
         ...state,
         sounds: {
@@ -112,7 +115,8 @@ export default function reduce(state = initialState, action, actions = {}) {
             dir: sound.dir,
             file: sound.file,
           }}), {}),
-        }
+        },
+        tracks,
       }
     }
 

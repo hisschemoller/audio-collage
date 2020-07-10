@@ -1,10 +1,15 @@
 import { dispatch, getActions, getState, STATE_CHANGE, } from '../store/store.js';
+import createSamplePlayer from './samplePlayer.js';
 
 const buffers = {
   allIds: [],
   byId: {},
 };
+const players = [];
 let ctx;
+let index = 0;
+let loopDurationInSecs = 1;
+let next = 0;
 
 function handleStateChanges(e) {
   const { state, action, actions, } = e.detail;
@@ -23,10 +28,35 @@ function initAudio() {
   }
 }
 
+function run() {
+  if (ctx.currentTime <= next && ctx.currentTime + 0.167 > next) {
+    var delay = next - ctx.currentTime;
+    players.forEach(player => {
+      player.play(next, index);
+    });
+    index += 1;
+    next += loopDurationInSecs;
+  }
+  if (index <= 63) {
+    requestAnimationFrame(run);
+  }
+}
+
 export function setup() {
   document.addEventListener(STATE_CHANGE, handleStateChanges);
 }
 
+function start(delay = 0) {
+  setTimeout(function() {
+    next = ctx.currentTime;
+    run();
+  }, delay);
+}
+
+/**
+ * Load all audiofiles and store in buffers.
+ * @param {Object} state 
+ */
 function updateBuffers(state) {
   const { sounds } = state;
   
@@ -40,21 +70,46 @@ function updateBuffers(state) {
     }
   }
 
-  // add sounds not in buffers
-  sounds.allIds.forEach(soundId => {
-    const { dir, file } = sounds.byId[soundId];
-    const url = `http://localhost:3015/sound?dir=${encodeURIComponent(dir)}&file=${encodeURIComponent(file)}`
-    fetch(url).then(response => {
-      if (response.status === 200) {
-        response.arrayBuffer().then(arrayBuffer => {
-          ctx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
-            buffers.allIds.push(soundId);
-            buffers.byId[soundId] = {
-              buffer: audioBuffer,
-            };
-          });
-        })
-      }
+  // load audio file, 
+  // inline function so it has access to the state parameter
+  const loadSound = soundId => {
+    return new Promise((resolve, reject) => {
+      const { dir, file } = sounds.byId[soundId];
+      const url = `/sound?dir=${encodeURIComponent(dir)}&file=${encodeURIComponent(file)}`
+      fetch(url).then(response => {
+        if (response.status === 200) {
+          response.arrayBuffer().then(arrayBuffer => {
+            ctx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
+              buffers.allIds.push(soundId);
+              buffers.byId[soundId] = {
+                buffer: audioBuffer,
+              };
+              resolve(soundId);
+            });
+          })
+        } else {
+          reject(soundId);
+        }
+      });
     });
+  };
+
+  // add sounds not in buffers
+  Promise.allSettled(sounds.allIds.map(loadSound)).then(results => {
+    setupScore(state);
+    start(10);
+  });
+}
+
+function setupScore(state) {
+  const {settings, tracks } = state;
+  loopDurationInSecs = settings.loopDurationInSecs;
+
+  tracks.allIds.forEach(trackId => {
+    const { pattern, sampleId, } = tracks.byId[trackId];
+    const buffer = buffers.byId[sampleId].buffer;
+    players.push(createSamplePlayer({
+      buffer, ctx, loopDurationInSecs, pattern,
+    }));
   });
 }

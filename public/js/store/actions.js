@@ -1,4 +1,5 @@
 import { createUUID } from '../system/utils.js';
+import { generateScore } from './actions-generate.js';
 
 const ACTION = 'ACTION';
 const DIRECTORY_ADD = 'DIRECTORY_ADD';
@@ -27,8 +28,9 @@ export default {
   GENERATE,
   generate: () => {
     return async (dispatch, getState, getActions) => {
-      const numSounds = 4;
-      const url = `http://localhost:3015/json?type=sound&amount=${numSounds}`
+      const { settings } = getState();
+      const { numSamples } = settings;
+      const url = `/json?type=sound&amount=${numSamples}`
       await fetch(url, {
         method: 'GET',
         cache: 'no-cache',
@@ -41,7 +43,8 @@ export default {
       .then(response => response.json())
       .then(data => {
         data.forEach(sound => sound.id = createUUID());
-        dispatch({ type: GENERATE, data });
+        const score = generateScore(getState(), data);
+        dispatch({ type: GENERATE, data, score });
       })
       .catch((error) => {
         console.error('Fetch sound error:', error);
