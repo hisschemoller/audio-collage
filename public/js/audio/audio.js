@@ -10,12 +10,14 @@ let ctx;
 let index = 0;
 let loopDurationInSecs = 1;
 let next = 0;
+let isRunning = false;
 
 function handleStateChanges(e) {
   const { state, action, actions, } = e.detail;
   switch (action.type) {
 
     case actions.GENERATE:
+      stop();
       initAudio();
       updateBuffers(state);
       break;
@@ -37,7 +39,7 @@ function run() {
     index += 1;
     next += loopDurationInSecs;
   }
-  if (index <= 63) {
+  if (isRunning) {
     requestAnimationFrame(run);
   }
 }
@@ -48,9 +50,18 @@ export function setup() {
 
 function start(delay = 0) {
   setTimeout(function() {
+    isRunning = true;
     next = ctx.currentTime;
     run();
   }, delay);
+}
+
+function stop() {
+  index = 0;
+  isRunning = false;
+  next = 0;
+  players.forEach(player => player.stop());
+  players.length = 0;
 }
 
 /**

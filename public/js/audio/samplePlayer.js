@@ -3,6 +3,7 @@
  */
 export default function createSamplePlayer(data) {
   const { buffer, ctx, loopDurationInSecs, pattern, } = data;
+  const voices = [];
 
   const createVoice = function(when, duration) {
     let source, gain;
@@ -24,6 +25,8 @@ export default function createSamplePlayer(data) {
 
     source.start(when);
     source.stop(when + duration);
+
+    voices.push({source, gain});
   };
 
   const play = function(when, index) {
@@ -32,7 +35,17 @@ export default function createSamplePlayer(data) {
     });
   };
 
+  const stop = () => {
+    voices.forEach(voice => {
+      voice.source.stop();
+      voice.gain.disconnect();
+      voice.gain = null;
+    });
+    voices.length = 0;
+  };
+
   return {
     play,
+    stop,
   };
 }
