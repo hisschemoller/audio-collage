@@ -10,6 +10,10 @@ function addEventListeners() {
     dispatch(getActions().generate());
   });
 
+  generateBtn.addEventListener('click', e => {
+    dispatch(getActions().generate());
+  });
+
   document.addEventListener('keydown', e => {
 
     // don't perform shortcuts while typing in a text input.

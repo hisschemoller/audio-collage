@@ -4,10 +4,11 @@ const initialState = {
     allIds: [],
     byId: {},
   },
+  isPlaying: false,
   settings: {
     loopDurationInSecs: 2,
     numSamples: 4,
-    numTracks: 1,
+    numTracks: 2,
   },
   sounds: {
     allIds: [],

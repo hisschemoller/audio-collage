@@ -1,4 +1,5 @@
 import { createUUID } from '../system/utils.js';
+import patterns from './actions-patterns.js';
 
 /**
  * Generate score.
@@ -19,22 +20,30 @@ export function generateScore(state, sampleData) {
     tracks.allIds.push(trackId);
     tracks.byId[trackId] = {
       sampleId: sampleData[Math.floor(Math.random() * numSamples)].id,
-      pattern: [
-        {
-          time: 0/16,
-        },
-        {
-          time: 4/16,
-        },
-        {
-          time: 8/16,
-        },
-        {
-          time: 12/16,
-        },
-      ],
+      pattern: getPattern(i),
     };
   }
 
   return { tracks };
+}
+
+function getPattern(trackIndex) {
+  switch (trackIndex) {
+    case 0:
+      return patterns.fourfour;
+
+    case 1: {
+      const pattern = [];
+      pattern.push({ time: Math.floor(Math.random() * 16) / 16 });
+      pattern.push({ time: Math.floor(Math.random() * 16) / 16 });
+      pattern.push({ time: Math.floor(Math.random() * 16) / 16 });
+      return pattern;
+    }
+
+    case 2: {
+      const pattern = [];
+      pattern.push({ time: Math.floor(Math.random() * 16) / 16 });
+      return pattern;
+    }
+  }
 }
