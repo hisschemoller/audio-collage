@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const { getAudioDurationInSeconds } = require('get-audio-duration');
 
 const app = express();
 const port = process.env.PORT || 3015;
@@ -22,23 +23,8 @@ app.get('/json', function (req, res) {
   const { amount, type } = req.query;
   switch (type) {
     case 'sound':
-      const data = [];
-      for (let i = 0, n = amount; i < n; i++) {
-          const fileIndex = Math.floor(Math.random() * numFiles);
-          allData.forEach(dirData => {
-            if (fileIndex >= dirData.startIndex && fileIndex < dirData.startIndex + dirData.audioFiles.length) {
-              data.push({
-                dir: dirData.dir,
-                file: dirData.audioFiles[fileIndex - dirData.startIndex]
-              });
-            }
-          });
-      }
-      res.json(data);
+      serveSoundData(res, amount);
       break;
-    case 'config':
-      res.json(config);
-        break;
   }
 });
 
@@ -56,6 +42,52 @@ app.post('/paths', (req, res) => {
   getAllDirectories(req.body);
   res.send(req.body);
 });
+
+/**
+ *
+ *
+ * @param {*} response
+ * @param {*} amount
+ */
+function serveSoundData(response, amount) {
+  const data = [];
+  for (let i = 0, n = amount; i < n; i++) {
+    const fileIndex = Math.floor(Math.random() * numFiles);
+    allData.forEach(dirData => {
+      if (fileIndex >= dirData.startIndex && fileIndex < dirData.startIndex + dirData.audioFiles.length) {
+        data.push({
+          dir: dirData.dir,
+          file: dirData.audioFiles[fileIndex - dirData.startIndex]
+        });
+      }
+    });
+  }
+
+  // get the audio duration of each file
+  Promise.allSettled(data.map(getAudioDuration)).then(results => {
+    response.json(data);
+  });
+}
+
+/**
+ * Get the duration in seconds of an audio file.
+ * @param {Object} data Directory path and filename.
+ * @returns {Object} Promise.
+ */
+function getAudioDuration(data) {
+  return new Promise((resolve, reject) => {
+    const { dir, file } = data;
+    const url = `${dir}/${file}`;
+    getAudioDurationInSeconds(url)
+    .then(duration => {
+      data.duration = duration;
+      resolve(duration);
+    })
+    .catch((error) => {
+      reject('Error:', error);
+    });
+  });
+}
 
 /**
  * Iterate all directories.
