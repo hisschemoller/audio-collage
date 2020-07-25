@@ -112,10 +112,7 @@ export default function reduce(state = initialState, action, actions = {}) {
         ...state,
         sounds: {
           allIds: data.reduce((accumulator, sound) => [ ...accumulator, sound.id ], []),
-          byId: data.reduce((accumulator, sound) => ({ ...accumulator, [sound.id]: {
-            dir: sound.dir,
-            file: sound.file,
-          }}), {}),
+          byId: data.reduce((accumulator, sound) => ({ ...accumulator, [sound.id]: { ...sound }}), {}),
         },
         tracks,
         transport: 'play',

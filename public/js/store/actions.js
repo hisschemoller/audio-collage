@@ -45,6 +45,7 @@ export default {
       .then(response => response.json())
       .then(data => {
         data.forEach(sound => sound.id = createUUID());
+        console.log(data);
         const score = generateScore(getState(), data);
         dispatch({ type: GENERATE, data, score });
       });
