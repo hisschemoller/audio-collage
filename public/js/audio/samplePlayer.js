@@ -2,10 +2,10 @@
  * Sample playback.
  */
 export default function createSamplePlayer(data) {
-  const { buffer, ctx, loopDurationInSecs, pattern, } = data;
+  const { buffer, ctx, loopDurationInSecs, pattern, sampleDuration, sampleStartOffset, } = data;
   const voices = [];
 
-  const createVoice = function(when, duration) {
+  const createVoice = function(when) {
     let source, gain;
 
     source = ctx.createBufferSource();
@@ -16,22 +16,22 @@ export default function createSamplePlayer(data) {
 
     gain.gain.setValueAtTime(0.0001, when);
     gain.gain.exponentialRampToValueAtTime(1, when + 0.004);
-    gain.gain.exponentialRampToValueAtTime(0.0001, when + duration);
+    gain.gain.exponentialRampToValueAtTime(0.0001, when + sampleDuration);
 
     source.onended = function(e) {
       gain.disconnect();
       gain = null;
     };
 
-    source.start(when);
-    source.stop(when + duration);
+    source.start(when, sampleStartOffset);
+    source.stop(when + sampleDuration);
 
     voices.push({source, gain});
   };
 
   const play = function(when, index) {
     pattern.forEach(note => {
-      createVoice(when + (loopDurationInSecs * note.time), 0.4);
+      createVoice(when + (loopDurationInSecs * note.time));
     });
   };
 

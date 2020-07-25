@@ -18,16 +18,27 @@ export function generateScore(state, sampleData) {
   for (let i = 0, n = numTracks; i < n; i++) {
     const trackId = createUUID();
     tracks.allIds.push(trackId);
-    tracks.byId[trackId] = {
-      sampleId: sampleData[Math.floor(Math.random() * numSamples)].id,
-      pattern: getPattern(i),
-    };
+    tracks.byId[trackId] = createTrack(state, sampleData, i);
   }
 
   return { tracks };
 }
 
-function getPattern(trackIndex) {
+function createTrack(state, sampleData, index) {
+  const { settings } = state;
+  const { numSamples, loopDurationInSecs } = settings;
+  const { duration, id: sampleId } = sampleData[Math.floor(Math.random() * numSamples)];
+  const sampleDuration = 0.5;
+  const sampleStartOffset = duration > 3 ? Math.random() * (duration - sampleDuration) : 0;
+  return {
+    sampleDuration,
+    sampleId,
+    sampleStartOffset,
+    pattern: createPattern(index),
+  };
+}
+
+function createPattern(trackIndex) {
   switch (trackIndex) {
     case 0:
       return patterns.fourfour;

@@ -58,10 +58,10 @@ function setupScore(state) {
   players.length = 0;
 
   tracks.allIds.forEach(trackId => {
-    const { pattern, sampleId, } = tracks.byId[trackId];
+    const { pattern, sampleDuration, sampleId, sampleStartOffset, } = tracks.byId[trackId];
     const buffer = buffers.byId[sampleId].buffer;
     players.push(createSamplePlayer({
-      buffer, ctx, loopDurationInSecs, pattern,
+      buffer, ctx, loopDurationInSecs, pattern, sampleDuration, sampleStartOffset,
     }));
   });
 }
