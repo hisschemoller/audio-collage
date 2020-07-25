@@ -9,7 +9,16 @@
 </head>
 <body>
   <div id="controls">
-    <button type="button" id="controls__generate">Generate</button>
+    <div>
+      <label for="file-import">Import project...</label>
+      <input type="file" multiple="false" id="file-import" />
+      <button type="button" id="file-export">Export project...</button>
+    </div>
+    <div>
+      <button type="button" id="controls__generate">Generate</button>
+      <label for="controls__play">Play</label>
+      <input type="checkbox" id="controls__play" />
+    </div>
   </div>
   <div id="dirs">
     <h3>Audio folder locations</h3>

@@ -14,6 +14,14 @@ function addEventListeners() {
     dispatch(getActions().generate());
   });
 
+  rootEl.querySelector('#file-export').addEventListener('click', () => {
+    dispatch(getActions().projectExport());
+  });
+
+  rootEl.querySelector('#file-import').addEventListener('change', e => {
+    dispatch(getActions().projectImport(e.target.files[0]));
+  });
+
   document.addEventListener('keydown', e => {
 
     // don't perform shortcuts while typing in a text input.

@@ -54,6 +54,45 @@ export default {
 
   NEW_PROJECT,
   newProject: () => ({ type: NEW_PROJECT }),
+
+  projectExport: () => {
+    return (dispatch, getState) => {
+      let jsonString = JSON.stringify(getState()),
+      blob = new Blob([ jsonString ], { type: 'application/json' }),
+      a = document.createElement('a');
+      a.download = 'audiocollage.json';
+      a.href = URL.createObjectURL(blob);
+      a.click();
+    }
+  },
+
+  projectImport: (file) => {
+    return (dispatch, getState, getActions) => {
+      let fileReader = new FileReader();
+
+      // closure to capture the file information
+      fileReader.onload = (function(f) {
+        return function(e) {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (data) {
+              dispatch(getActions().setProject(data));
+            } else {
+              throw new Error('No data found in imported file.');
+            }
+          } catch(errorMessage) {
+            showDialog({
+              header: 'Error importing file', 
+              body: `An error occurred while importing the file. ${errorMessage}`,
+              resolve: 'Close',
+            });
+          }
+        };
+      })(file);
+
+      fileReader.readAsText(file);
+    }
+  },
   
   SET_PROJECT,
   setProject: state => ({ type: SET_PROJECT, state }),
