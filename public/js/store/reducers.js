@@ -4,7 +4,6 @@ const initialState = {
     allIds: [],
     byId: {},
   },
-  isPlaying: false,
   settings: {
     loopDurationInSecs: 2,
     numSamples: 4,
@@ -18,6 +17,7 @@ const initialState = {
     allIds: [],
     byId: {},
   },
+  transport: false,
 };
 
 /**
@@ -118,6 +118,7 @@ export default function reduce(state = initialState, action, actions = {}) {
           }}), {}),
         },
         tracks,
+        transport: 'play',
       }
     }
 
@@ -141,6 +142,15 @@ export default function reduce(state = initialState, action, actions = {}) {
 
     case actions.SET_PROJECT:
       return { ...state, ...action.state };
+		
+    case actions.SET_TRANSPORT: {
+      const { command } = action;
+      const { transport } = state;
+      return {
+        ...state,
+        transport: command === 'toggle' ? transport === 'play' ? 'pause' : 'play' : command,
+      };
+    }
 
     default:
       return state ? state : initialState;

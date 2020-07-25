@@ -9,6 +9,7 @@ const DIRECTORY_TOGGLE_ENABLE = 'DIRECTORY_TOGGLE_ENABLE';
 const GENERATE = 'GENERATE';
 const NEW_PROJECT = 'NEW_PROJECT';
 const SET_PROJECT = 'SET_PROJECT';
+const SET_TRANSPORT = 'SET_TRANSPORT';
 
 // actions
 export default {
@@ -45,10 +46,10 @@ export default {
         data.forEach(sound => sound.id = createUUID());
         const score = generateScore(getState(), data);
         dispatch({ type: GENERATE, data, score });
-      })
-      .catch((error) => {
-        console.error('Fetch sound error:', error);
       });
+      // .catch((error) => {
+      //   console.error('Fetch sound error:', error);
+      // });
     };
   },
 
@@ -96,4 +97,7 @@ export default {
   
   SET_PROJECT,
   setProject: state => ({ type: SET_PROJECT, state }),
+
+  SET_TRANSPORT,
+  setTransport: command => ({ type: SET_TRANSPORT, command }),
 };

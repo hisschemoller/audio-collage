@@ -21,6 +21,10 @@ function handleStateChanges(e) {
       initAudio();
       updateBuffers(state);
       break;
+
+    case actions.SET_TRANSPORT:
+      updatePlayback(state);
+      break;
   }
 }
 
@@ -48,6 +52,20 @@ export function setup() {
   document.addEventListener(STATE_CHANGE, handleStateChanges);
 }
 
+function setupScore(state) {
+  const {settings, tracks } = state;
+  const { loopDurationInSecs } = settings;
+  players.length = 0;
+
+  tracks.allIds.forEach(trackId => {
+    const { pattern, sampleId, } = tracks.byId[trackId];
+    const buffer = buffers.byId[sampleId].buffer;
+    players.push(createSamplePlayer({
+      buffer, ctx, loopDurationInSecs, pattern,
+    }));
+  });
+}
+
 function start(delay = 0) {
   setTimeout(function() {
     isRunning = true;
@@ -61,7 +79,6 @@ function stop() {
   isRunning = false;
   next = 0;
   players.forEach(player => player.stop());
-  players.length = 0;
 }
 
 /**
@@ -112,15 +129,17 @@ function updateBuffers(state) {
   });
 }
 
-function setupScore(state) {
-  const {settings, tracks } = state;
-  loopDurationInSecs = settings.loopDurationInSecs;
+function updatePlayback(state) {
+  const { transport } = state;
+  switch (transport) {
 
-  tracks.allIds.forEach(trackId => {
-    const { pattern, sampleId, } = tracks.byId[trackId];
-    const buffer = buffers.byId[sampleId].buffer;
-    players.push(createSamplePlayer({
-      buffer, ctx, loopDurationInSecs, pattern,
-    }));
-  });
+    case 'play':
+      start(10);
+      break;
+    
+    case 'pause':
+    case 'stop':
+      stop();
+      break;
+  }
 }
