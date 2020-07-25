@@ -142,6 +142,17 @@ export default function reduce(state = initialState, action, actions = {}) {
 
     case actions.SET_PROJECT:
       return { ...state, ...action.state };
+
+    case actions.SET_SETTING: {
+      const { setting, value } = action;
+      return { 
+        ...state, 
+        settings: {
+          ...state.settings,
+          [setting]: value,
+        }
+      };
+    }
 		
     case actions.SET_TRANSPORT: {
       const { command } = action;

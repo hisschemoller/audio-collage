@@ -9,6 +9,7 @@ const DIRECTORY_TOGGLE_ENABLE = 'DIRECTORY_TOGGLE_ENABLE';
 const GENERATE = 'GENERATE';
 const NEW_PROJECT = 'NEW_PROJECT';
 const SET_PROJECT = 'SET_PROJECT';
+const SET_SETTING = 'SET_SETTING';
 const SET_TRANSPORT = 'SET_TRANSPORT';
 
 // actions
@@ -67,7 +68,7 @@ export default {
     }
   },
 
-  projectImport: (file) => {
+  projectImport: file => {
     return (dispatch, getState, getActions) => {
       let fileReader = new FileReader();
 
@@ -97,6 +98,9 @@ export default {
   
   SET_PROJECT,
   setProject: state => ({ type: SET_PROJECT, state }),
+  
+  SET_SETTING,
+  setSetting: (setting, value) => ({ type: SET_SETTING, setting, value }),
 
   SET_TRANSPORT,
   setTransport: command => ({ type: SET_TRANSPORT, command }),
