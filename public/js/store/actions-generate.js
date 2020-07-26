@@ -40,8 +40,8 @@ function createTrack(state, sampleData, index) {
 
 function createPattern(trackIndex) {
   switch (trackIndex) {
-    case 0:
-      return patterns.fourfour;
+    // case 0:
+    //   return patterns.fourfour;
 
     case 1: {
       const pattern = [];
@@ -51,9 +51,9 @@ function createPattern(trackIndex) {
       return pattern;
     }
 
-    case 2: {
+    default: {
       const pattern = [];
-      pattern.push({ time: Math.floor(Math.random() * 16) / 16 });
+      pattern.push({ time: Math.floor(Math.random() * 32) / 16 });
       return pattern;
     }
   }

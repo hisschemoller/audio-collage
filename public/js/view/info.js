@@ -7,6 +7,8 @@ function handleStateChanges(e) {
   switch (action.type) {
 
     case actions.GENERATE:
+    case actions.NEW_PROJECT:
+    case actions.SET_PROJECT:
       updateInfo(state);
       break;
   }
@@ -20,6 +22,7 @@ export function setup() {
 function updateInfo(state) {
   const { sounds, tracks, } = state;
   let html = '<table>';
+  html += `<tr><th>offset</th><th>duration</th><th>file</th></tr>`;
   tracks.allIds.forEach(trackId => {
     const { sampleId, sampleStartOffset } = tracks.byId[trackId];
     const { dir, duration, file } = sounds.byId[sampleId];

@@ -30,6 +30,7 @@ export default function createSamplePlayer(data) {
   };
 
   const play = function(when, index) {
+    console.log(when);
     pattern.forEach(note => {
       createVoice(when + (loopDurationInSecs * note.time));
     });

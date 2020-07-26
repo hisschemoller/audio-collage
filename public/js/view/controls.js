@@ -53,6 +53,8 @@ function handleStateChanges(e) {
   switch (action.type) {
 
     case actions.GENERATE:
+    case actions.NEW_PROJECT:
+    case actions.SET_PROJECT:
     case actions.SET_TRANSPORT:
       updatePlayButton(state);
       break;

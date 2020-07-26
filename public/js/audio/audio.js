@@ -17,8 +17,9 @@ function handleStateChanges(e) {
   switch (action.type) {
 
     case actions.GENERATE:
+    case actions.NEW_PROJECT:
+    case actions.SET_PROJECT:
       stop();
-      initAudio();
       updateBuffers(state);
       break;
 
@@ -28,7 +29,7 @@ function handleStateChanges(e) {
   }
 }
 
-function initAudio() {
+export function initAudio() {
   if (!ctx) {
     ctx = new (window.AudioContext || window.webkitAudioContext)();
   }
@@ -55,6 +56,8 @@ export function setup() {
 function setupScore(state) {
   const {settings, tracks } = state;
   const { loopDurationInSecs } = settings;
+  // loopDurationInSecs = s;
+  console.log(loopDurationInSecs);
   players.length = 0;
 
   tracks.allIds.forEach(trackId => {
