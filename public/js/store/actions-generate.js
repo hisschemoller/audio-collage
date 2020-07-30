@@ -28,9 +28,20 @@ function createTrack(state, sampleData, index) {
   const { settings } = state;
   const { numSamples, loopDurationInSecs } = settings;
   const { duration, id: sampleId } = sampleData[Math.floor(Math.random() * numSamples)];
-  const sampleDuration = 0.5;
+  let sampleDuration = 0.5;
+  let gain = 1;
+  let pattern = createPattern(index);
+
+  if (duration >= loopDurationInSecs) {
+    sampleDuration = duration;
+    gain = 0.1;
+    pattern = [{ time: 0 }];
+  }
+
   const sampleStartOffset = duration > 3 ? Math.random() * (duration - sampleDuration) : 0;
+
   return {
+    gain,
     sampleDuration,
     sampleId,
     sampleStartOffset,
@@ -52,8 +63,9 @@ function createPattern(trackIndex) {
     }
 
     default: {
+
       const pattern = [];
-      pattern.push({ time: Math.floor(Math.random() * 32) / 16 });
+      pattern.push({ time: Math.floor(Math.random() * 16) / 16 });
       return pattern;
     }
   }

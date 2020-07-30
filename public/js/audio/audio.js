@@ -43,6 +43,7 @@ function run() {
     });
     index += 1;
     next += loopDurationInSecs;
+    console.log('loopDurationInSecs', loopDurationInSecs);
   }
   if (isRunning) {
     requestAnimationFrame(run);
@@ -55,16 +56,14 @@ export function setup() {
 
 function setupScore(state) {
   const {settings, tracks } = state;
-  const { loopDurationInSecs } = settings;
-  // loopDurationInSecs = s;
-  console.log(loopDurationInSecs);
+  ({ loopDurationInSecs } = settings);
   players.length = 0;
 
   tracks.allIds.forEach(trackId => {
-    const { pattern, sampleDuration, sampleId, sampleStartOffset, } = tracks.byId[trackId];
+    const { gain, pattern, sampleDuration, sampleId, sampleStartOffset, } = tracks.byId[trackId];
     const buffer = buffers.byId[sampleId].buffer;
     players.push(createSamplePlayer({
-      buffer, ctx, loopDurationInSecs, pattern, sampleDuration, sampleStartOffset,
+      buffer, ctx, gain, loopDurationInSecs, pattern, sampleDuration, sampleStartOffset,
     }));
   });
 }

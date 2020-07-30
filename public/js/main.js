@@ -14,8 +14,8 @@ async function main() {
   setupSettings();
 
   showDialog({
-    header: 'Header', 
-    body: 'Body',
+    header: 'Audio Collage', 
+    body: 'Click Ok to initialise the audio engine.',
     resolve: 'Ok',
     resolveCb: () => {
       initAudio();
