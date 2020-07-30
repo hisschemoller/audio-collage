@@ -221,10 +221,10 @@ fresh@0.5.2:
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=
 
-get-audio-duration@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/get-audio-duration/-/get-audio-duration-2.0.2.tgz#4902bfedf5a0b15cab58f4c2020b8bc59cb84735"
-  integrity sha512-Oi/s+qo+4va1/RqhfQmWEErVRCENSFvbrYpu64bSeZYK+c+ar74VpadA8VvrvwRmvfgv91hezHcevhV1GolVkg==
+get-audio-duration@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/get-audio-duration/-/get-audio-duration-2.0.3.tgz#efeb34bf06a6e07a21d74541a38ac8008ebc3f59"
+  integrity sha512-y+BNFAL0AFWx2XFORvaN/ExV3Urqb0Wtm/D8UQg0q4trI93ye5XQSVz6zetEajS3p65sZZt1gIBWy2jIF7w8gg==
   dependencies:
     "@ffprobe-installer/ffprobe" "^1.0.12"
     execa "^4.0.2"

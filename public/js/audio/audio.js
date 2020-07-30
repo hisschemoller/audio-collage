@@ -1,5 +1,6 @@
 import { dispatch, getActions, getState, STATE_CHANGE, } from '../store/store.js';
-import createSamplePlayer from './samplePlayer.js';
+import createSamplePlayer from './player.js';
+import { setup as setupVoices } from './voices.js';
 
 const buffers = {
   allIds: [],
@@ -32,6 +33,7 @@ function handleStateChanges(e) {
 export function initAudio() {
   if (!ctx) {
     ctx = new (window.AudioContext || window.webkitAudioContext)();
+    setupVoices(ctx);
   }
 }
 
@@ -70,6 +72,7 @@ function setupScore(state) {
 }
 
 function start(delay = 0) {
+  console.trace();
   setTimeout(function() {
     isRunning = true;
     next = ctx.currentTime;
@@ -128,7 +131,7 @@ function updateBuffers(state) {
   // add sounds not in buffers
   Promise.allSettled(sounds.allIds.map(loadSound)).then(results => {
     setupScore(state);
-    start(10);
+    // start(10);
   });
 }
 
