@@ -48,6 +48,10 @@ function addEventListeners() {
   });
 }
 
+/**
+ * Handle application state changes.
+ * @param {Event} e Custom event.
+ */
 function handleStateChanges(e) {
   const { state, action, actions, } = e.detail;
   switch (action.type) {
@@ -61,6 +65,9 @@ function handleStateChanges(e) {
   }
 }
 
+/**
+ * General module setup.
+ */
 export function setup() {
   rootEl = document.querySelector('#controls');
   generateBtn = rootEl.querySelector('#controls__generate');
@@ -69,5 +76,6 @@ export function setup() {
 }
 
 function updatePlayButton(state) {
+  console.log('updatePlayButton', state.transport);
   playCheck.checked = state.transport === 'play';
 }

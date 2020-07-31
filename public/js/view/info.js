@@ -2,6 +2,10 @@ import { dispatch, getActions, getState, STATE_CHANGE, } from '../store/store.js
 
 let rootEl;
 
+/**
+ * Handle application state changes.
+ * @param {Event} e Custom event.
+ */
 function handleStateChanges(e) {
   const { state, action, actions, } = e.detail;
   switch (action.type) {
@@ -14,6 +18,9 @@ function handleStateChanges(e) {
   }
 }
 
+/**
+ * General module setup.
+ */
 export function setup() {
   rootEl = document.querySelector('#info');
   document.addEventListener(STATE_CHANGE, handleStateChanges);

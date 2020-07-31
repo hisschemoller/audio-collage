@@ -17,7 +17,7 @@ const initialState = {
     allIds: [],
     byId: {},
   },
-  transport: false,
+  transport: 'stop',
 };
 
 /**

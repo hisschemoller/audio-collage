@@ -1,7 +1,8 @@
 import { createUUID } from '../system/utils.js';
 import { generateScore } from './actions-generate.js';
 
-const ACTION = 'ACTION';
+const ADVANCE_TIME = 'ADVANCE_TIME';
+const BUFFERS_LOADED = 'BUFFERS_LOADED';
 const DIRECTORY_ADD = 'DIRECTORY_ADD';
 const DIRECTORY_PATH_CHANGE = 'DIRECTORY_PATH_CHANGE';
 const DIRECTORY_REMOVE = 'DIRECTORY_REMOVE';
@@ -14,6 +15,12 @@ const SET_TRANSPORT = 'SET_TRANSPORT';
 
 // actions
 export default {
+
+  ADVANCE_TIME,
+  advanceTime: (when, index) => ({ type: ADVANCE_TIME, when, index }),
+
+  BUFFERS_LOADED,
+  buffersLoaded: () => ({ type: BUFFERS_LOADED }),
 
   DIRECTORY_ADD,
   directoryAdd: () => ({ type: DIRECTORY_ADD, id: createUUID() }),

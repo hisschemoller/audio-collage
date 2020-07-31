@@ -6,18 +6,22 @@ function addEventListeners() {
   document.addEventListener(STATE_CHANGE, handleStateChanges);
 
   loopDurEl.addEventListener('input', e => {
-    dispatch(getActions().setSetting('loopDurationInSecs', e.target.value));
+    dispatch(getActions().setSetting('loopDurationInSecs', parseFloat(e.target.value, 10)));
   });
 
   numSamplesEl.addEventListener('input', e => {
-    dispatch(getActions().setSetting('numSamples', e.target.value));
+    dispatch(getActions().setSetting('numSamples', parseFloat(e.target.value, 10)));
   });
 
   numTracksEl.addEventListener('input', e => {
-    dispatch(getActions().setSetting('numTracks', e.target.value));
+    dispatch(getActions().setSetting('numTracks', parseFloat(e.target.value, 10)));
   });
 }
 
+/**
+ * Handle application state changes.
+ * @param {Event} e Custom event.
+ */
 function handleStateChanges(e) {
   const { state, action, actions, } = e.detail;
   switch (action.type) {
@@ -30,6 +34,9 @@ function handleStateChanges(e) {
   }
 }
 
+/**
+ * General module setup.
+ */
 export function setup() {
   rootEl = document.querySelector('#settings');
   loopDurEl = rootEl.querySelector('#settings__loopduration');

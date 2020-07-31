@@ -13,8 +13,8 @@ export function allocVoice() {
 
 	if (voice.isPlaying) {
 		freeVoice(voice);
-  }
-  
+	}
+	
   return voice;
 }
 
@@ -30,8 +30,13 @@ export function freeVoice(voice) {
 	voice.isPlaying = false;
 }
 
+export function getVoices() {
+	return voices;
+}
+
 /**
  * Create the bank of reusable voice objects.
+ * @param {Object} ctx AudioContext.
  */
 export function setup(ctx) {
 	for (let i = 0; i < numVoices; i++) {
@@ -39,6 +44,7 @@ export function setup(ctx) {
 		gain.connect(ctx.destination);
 
 		voices.push({
+			index: i,
 			isPlaying: false,
 			gain,
 			source: null,

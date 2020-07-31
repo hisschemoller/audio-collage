@@ -3,6 +3,9 @@ import { dispatch, getActions, getState, STATE_CHANGE, } from '../store/store.js
 let rootEl, listEl, addBtn;
 let resetKeyCombo = [];
 
+/**
+ * General module setup.
+ */
 export function setup() {
   rootEl = document.querySelector('#dirs');
   listEl = rootEl.querySelector('#dirs__list');
@@ -12,7 +15,7 @@ export function setup() {
 
 /**
  * Add a directory item to the list.
- * @param {Object} state 
+ * @param {Object} state Application state.
  */
 function updateDirectories(state) {
   const { directories, } = state;
@@ -63,6 +66,10 @@ function addEventListeners() {
   });
 }
 
+/**
+ * HAndle application state changes.
+ * @param {Event} e Custom event.
+ */
 function handleStateChanges(e) {
   const { state, action, actions, } = e.detail;
   switch (action.type) {
