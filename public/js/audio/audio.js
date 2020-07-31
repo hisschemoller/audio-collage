@@ -79,7 +79,6 @@ function stop() {
 function update(state) {
   const { settings } = state;
   ({ loopDurationInSecs } = settings);
-  console.log('update audio loopDurationInSecs', loopDurationInSecs);
 }
 
 function updatePlayback(state) {

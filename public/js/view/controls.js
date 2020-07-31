@@ -76,6 +76,5 @@ export function setup() {
 }
 
 function updatePlayButton(state) {
-  console.log('updatePlayButton', state.transport);
   playCheck.checked = state.transport === 'play';
 }
