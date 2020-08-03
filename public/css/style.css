@@ -7,8 +7,45 @@
 body {
   font-family: sans-serif;
 }
-.dir__path {
+#top-row {
+  display: flex;
+}
+#controls {
+  border: 1px solid #999;
+  margin: 10px;
+  padding: 10px;
+}
+#settings {
+  border: 1px solid #999;
+  margin: 10px;
+  padding: 10px;
+}
+#settings > div {
+  display: flex;
+}
+#settings label {
+  display: block;
+  width: 120px;
+}
+#settings input {
+  text-align: right;
+  width: 50px;
+}
+#dirs{
+  padding: 10px;
+}
+#dirs h4 {
+  display: inline;
+}
+#dirs__list {
   width: 80%;
+}
+#dirs__list td:nth-of-type(2),
+#dirs__list td:nth-of-type(3) {
+  width: 70px;
+}
+.dir__path {
+  width: 100%;
 }
 table {
   border: 1px solid #999;

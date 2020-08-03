@@ -8,35 +8,50 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="controls">
-    <div>
-      <label for="file-import">Import project...</label>
-      <input type="file" multiple="false" id="file-import" />
-      <button type="button" id="file-export">Export project...</button>
+  <div id="top-row">
+    <div id="controls">
+      <div>
+        <label for="file-import">Import project...</label>
+        <input type="file" multiple="false" id="file-import" />
+      </div>
+      <div>
+        <button type="button" id="file-export">Export project...</button>
+      </div>
+      <div>
+        <button type="button" id="controls__generate">Generate</button>
+        <label for="controls__play">Play</label>
+        <input type="checkbox" id="controls__play" />
+      </div>
     </div>
-    <div>
-      <button type="button" id="controls__generate">Generate</button>
-      <label for="controls__play">Play</label>
-      <input type="checkbox" id="controls__play" />
+    <div id="settings">
+      <h4>Settings</h4>
+      <div>
+        <label for="settings__loopduration">Loop duration</label>
+        <input type="number" id="settings__loopduration" />
+      </div>
+      <div>
+        <label for="settings__numsamples">Sample files</label>
+        <input type="number" id="settings__numsamples" />
+      </div>
+      <div>
+        <label for="settings__numtracks">Tracks</label>
+        <input type="number" id="settings__numtracks" />
+      </div>
     </div>
-  </div>
-  <div id="settings">
-    <label for="settings__loopduration">Loop duration</label>
-    <input type="number" id="settings__loopduration" />
-    <label for="settings__numsamples">Sample files</label>
-    <input type="number" id="settings__numsamples" />
-    <label for="settings__numtracks">Tracks</label>
-    <input type="number" id="settings__numtracks" />
   </div>
   <div id="dirs">
-    <h3>Audio folder locations</h3>
+    <h4>Audio folder locations</h4>
     <button type="button" id="dirs__add">Add location</button>
-    <div id="dirs__header">
-      <span class="dirs__header-path">Path</span>
-      <span class="dirs__header-disable">Disable</span>
-      <span class="dirs__header-delete">Delete</span>
+    <table id="dirs__list">
+      <tr>
+        <th>Path</th>
+        <th>Disable</th>
+        <th>Delete</th>
+      </tr>
+    </table>
+    <div>
     </div>
-    <div id="dirs__list"></div>
+    
   </div>
   <div id="info"></div>
   
@@ -60,11 +75,11 @@
 </div>
 
 	<template id="template-dir">
-		<div class="dir">
-			<input type="text" class="dir__path"></input>
-      <input type="checkbox" class="dir__disable"></input>
-      <button type="button" class="dir__delete">x</button>
-		</div>
+		<tr class="dir">
+			<td><input type="text" class="dir__path"></input></td>
+      <td><input type="checkbox" class="dir__disable"></input></td>
+      <td><button type="button" class="dir__delete">x</button></td>
+		</tr>
   </template><!-- /template-setting-integer -->
   
   <script src="js/main.js" type="module"></script>
