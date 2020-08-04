@@ -10,6 +10,7 @@ import patterns from './actions-patterns.js';
 export function generateScore(state, sampleData) {
   const { settings } = state;
   const { numSamples, numTracks } = settings;
+  const score = [0, 0, 1, 1];
   const tracks = {
     allIds: [],
     byId: {},
@@ -21,16 +22,16 @@ export function generateScore(state, sampleData) {
     tracks.byId[trackId] = createTrack(state, sampleData, i);
   }
 
-  return { tracks };
+  return { score, tracks };
 }
 
-function createTrack(state, sampleData, index) {
+function createTrack(state, sampleData, trackIndex) {
   const { settings } = state;
   const { numSamples, loopDurationInSecs } = settings;
   const { duration, id: sampleId } = sampleData[Math.floor(Math.random() * numSamples)];
   let playbackDuration = 0.5;
   let gain = 1;
-  let pattern = createPattern(index);
+  let pattern = createPattern(trackIndex);
 
   if (duration >= loopDurationInSecs) {
     playbackDuration = loopDurationInSecs;
@@ -45,7 +46,10 @@ function createTrack(state, sampleData, index) {
     playbackDuration,
     sampleId,
     sampleStartOffset,
-    pattern: createPattern(index),
+    patterns: [
+      createPattern(trackIndex),
+      createPattern(trackIndex),
+    ],
   };
 }
 

@@ -50,10 +50,10 @@ export default {
         referrerPolicy: 'no-referrer'
       })
       .then(response => response.json())
-      .then(data => {
-        data.forEach(sound => sound.id = createUUID());
-        const score = generateScore(getState(), data);
-        dispatch({ type: GENERATE, data, score });
+      .then(sampleData => {
+        sampleData.forEach(sound => sound.id = createUUID());
+        const { score, tracks } = generateScore(getState(), sampleData);
+        dispatch({ type: GENERATE, sampleData, score, tracks });
       });
       // .catch((error) => {
       //   console.error('Fetch sound error:', error);

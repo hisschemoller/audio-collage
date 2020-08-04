@@ -106,13 +106,13 @@ export default function reduce(state = initialState, action, actions = {}) {
     }
 
     case actions.GENERATE: {
-      const { data, score } = action;
-      const { tracks } = score;
+      const { sampleData, score, tracks } = action;
       return {
         ...state,
+        score,
         sounds: {
-          allIds: data.reduce((accumulator, sound) => [ ...accumulator, sound.id ], []),
-          byId: data.reduce((accumulator, sound) => ({ ...accumulator, [sound.id]: { ...sound }}), {}),
+          allIds: sampleData.reduce((accumulator, sound) => [ ...accumulator, sound.id ], []),
+          byId: sampleData.reduce((accumulator, sound) => ({ ...accumulator, [sound.id]: { ...sound }}), {}),
         },
         tracks,
         transport: 'play',

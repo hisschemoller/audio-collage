@@ -47,13 +47,15 @@ function handleStateChanges(e) {
 
 export function play(state, action) {
   const { when, index } = action;
-  const {settings, tracks } = state;
+  const {settings, score, tracks } = state;
   const { loopDurationInSecs } = settings;
+  const patternIndex = score[index % score.length];
+  console.log('patternIndex', patternIndex);
 
   tracks.allIds.forEach(trackId => {
-    const { gain, pattern, playbackDuration, sampleId, sampleStartOffset, } = tracks.byId[trackId];
+    const { gain, patterns, playbackDuration, sampleId, sampleStartOffset, } = tracks.byId[trackId];
     const buffer = getBuffer(sampleId);
-    pattern.forEach(note => {
+    patterns[patternIndex].forEach(note => {
       createVoice(when + (loopDurationInSecs * note.time), sampleStartOffset, playbackDuration, buffer);
     });
   });
