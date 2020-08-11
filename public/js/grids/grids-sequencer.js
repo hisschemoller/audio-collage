@@ -1,28 +1,28 @@
-import DrumMap = from './grids_patterns.js';
+import DrumMap from './grids-patterns.js';
 
 const MAX_PATTERN_LENGTH = 32;
 const NUM_PATTERNS = 50;
 const NUM_TRACKS = 3;
-const trigs = {};
+const trigs = [];
 let grids_x = null;
 let grids_y = null;
 
 const params = {
   grid_resolution: {
-    options: {'Quarters', '8ths', '16ths', '32nds'},
+    options: [ 'Quarters', '8ths', '16ths', '32nds' ],
     value: 16, // 4|8|16|32
   },
   pattern: {
-    value: 1 // min 1, max NUM_PATTERNS
+    value: 1 // min 10, max NUM_PATTERNS - 1
   },
   pattern_length: {
-    value: 16 // min 1, max MAX_PATTERN_LENGTH
+    value: 16, // min 0, max MAX_PATTERN_LENGTH - 1
   },
   grids_pattern_x: {
-    value: 0 // min 0, max 255
+    value: 0, // min 0, max 255
   },
   grids_pattern_y: {
-    value: 0 // min 0, max 255
+    value: 1, // min 0, max 255
   },
 };
 
@@ -31,12 +31,12 @@ const params = {
  * Array [NUM_PATTERNS][NUM_TRACKS][MAX_PATTERN_LENGTH]
  */
 function _init_trigs() {
-  for (let patternno = 1; patternno <= NUM_PATTERNS; patternno++) {
-    trigs[patternno] = [];
-    for (let y = 1; y <= NUM_TRACKS; y++) {
-      trigs[patternno][y] = [];
-      for (let x = 1; x <= MAX_PATTERN_LENGTH; x++) {
-        trigs[patternno][y][x] = 0;
+  for (let patternIndex = 0; patternIndex < NUM_PATTERNS; patternIndex++) {
+    trigs[patternIndex] = [];
+    for (let y = 0; y < NUM_TRACKS; y++) {
+      trigs[patternIndex][y] = [];
+      for (let x = 0; x < MAX_PATTERN_LENGTH; x++) {
+        trigs[patternIndex][y][x] = 0;
       }
     }
   }
@@ -59,16 +59,16 @@ function set_grids_xy(patternno, x, y, force = true) {
   const pattern_length = params.pattern_length.value;
 
   // Chose four drum map nodes based on the first two bits of x and y.
-  const i = Math.floor(x / 64) + 1 -- (x >> 6) + 1;
-  const j = Math.floor(y / 64) + 1 -- (y >> 6) + 1;
+  const i = Math.floor(x / 64); // (x >> 6)
+  const j = Math.floor(y / 64); // (y >> 6)
   const a_map = DrumMap.map[j][i];
   const b_map = DrumMap.map[j + 1][i];
   const c_map = DrumMap.map[j][i + 1];
   const d_map = DrumMap.map[j + 1][i + 1];
-  for (let trackIndex = 1; trackIndex <= NUM_TRACKS; trackIndex++) {
-    const track_offset = ((trackIndex - 1) * DrumMap.PATTERN_LENGTH);
-    for (stepIndex = 1; stepIndex <= pattern_length; stepIndex++) {
-      const step_offset = (((stepIndex - 1) * step_offset_multiplier) % DrumMap.PATTERN_LENGTH) + 1;
+  for (let trackIndex = 0; trackIndex < NUM_TRACKS; trackIndex++) {
+    const track_offset = trackIndex * DrumMap.PATTERN_LENGTH;
+    for (let stepIndex = 0; stepIndex < pattern_length; stepIndex++) {
+      const step_offset = (stepIndex * step_offset_multiplier) % DrumMap.PATTERN_LENGTH;
       const offset = track_offset + step_offset;
       const a = a_map[offset];
       const b = b_map[offset];
@@ -84,6 +84,7 @@ function set_grids_xy(patternno, x, y, force = true) {
   }
   grids_x = x;
   grids_y = y;
+  console.table(trigs[patternno]);
 }
 
 /**
@@ -103,6 +104,7 @@ function set_trig(patternno, step, track, value) {
  */
 export function setup() {
   _init_trigs();
+  set_grids_xy(params.pattern.value, params.grids_pattern_x.value, params.grids_pattern_y.value);
 }
 
 /**
