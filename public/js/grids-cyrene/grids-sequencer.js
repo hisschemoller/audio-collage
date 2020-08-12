@@ -1,4 +1,4 @@
-import DrumMap from './grids-patterns.js';
+import drumMap from './grids-patterns.js';
 
 const MAX_PATTERN_LENGTH = 32;
 const NUM_PATTERNS = 50;
@@ -8,20 +8,20 @@ let grids_x = null;
 let grids_y = null;
 
 const params = {
-  grid_resolution: {
+  gridResolution: {
     options: [ 'Quarters', '8ths', '16ths', '32nds' ],
     value: 16, // 4|8|16|32
   },
   pattern: {
-    value: 1 // min 10, max NUM_PATTERNS - 1
+    value: 1 // min 0, max NUM_PATTERNS - 1
   },
-  pattern_length: {
+  patternLength: {
     value: 16, // min 0, max MAX_PATTERN_LENGTH - 1
   },
-  grids_pattern_x: {
+  gridsPatternX: {
     value: 0, // min 0, max 255
   },
-  grids_pattern_y: {
+  gridsPatternY: {
     value: 1, // min 0, max 255
   },
 };
@@ -30,7 +30,7 @@ const params = {
  * Create the trigger matrix.
  * Array [NUM_PATTERNS][NUM_TRACKS][MAX_PATTERN_LENGTH]
  */
-function _init_trigs() {
+function initTrigs() {
   for (let patternIndex = 0; patternIndex < NUM_PATTERNS; patternIndex++) {
     trigs[patternIndex] = [];
     for (let y = 0; y < NUM_TRACKS; y++) {
@@ -45,31 +45,31 @@ function _init_trigs() {
 /**
  *
  *
- * @param {*} patternno
+ * @param {*} patternIndex
  * @param {*} x
  * @param {*} y
  * @param {*} force
  */
-function set_grids_xy(patternno, x, y, force = true) {
+function setGridsXY(patternIndex, x, y, force = true) {
 
-  // The DrumMap is at 32nd-note resolution,
+  // The drumMap is at 32nd-note resolution,
   // so we'll want to set different triggers depending on our desired grid resolution.
-  const grid_resolution = params.grid_resolution.value;
-  const step_offset_multiplier = Math.floor(32 / grid_resolution);
-  const pattern_length = params.pattern_length.value;
+  const gridResolution = params.gridResolution.value;
+  const stepOffsetMultiplier = Math.floor(32 / gridResolution);
+  const patternLength = params.patternLength.value;
 
   // Chose four drum map nodes based on the first two bits of x and y.
   const i = Math.floor(x / 64); // (x >> 6)
   const j = Math.floor(y / 64); // (y >> 6)
-  const a_map = DrumMap.map[j][i];
-  const b_map = DrumMap.map[j + 1][i];
-  const c_map = DrumMap.map[j][i + 1];
-  const d_map = DrumMap.map[j + 1][i + 1];
+  const a_map = drumMap.map[j][i];
+  const b_map = drumMap.map[j + 1][i];
+  const c_map = drumMap.map[j][i + 1];
+  const d_map = drumMap.map[j + 1][i + 1];
   for (let trackIndex = 0; trackIndex < NUM_TRACKS; trackIndex++) {
-    const track_offset = trackIndex * DrumMap.PATTERN_LENGTH;
-    for (let stepIndex = 0; stepIndex < pattern_length; stepIndex++) {
-      const step_offset = (stepIndex * step_offset_multiplier) % DrumMap.PATTERN_LENGTH;
-      const offset = track_offset + step_offset;
+    const trackOffset = trackIndex * drumMap.PATTERN_LENGTH;
+    for (let stepIndex = 0; stepIndex < patternLength; stepIndex++) {
+      const stepOffset = (stepIndex * stepOffsetMultiplier) % drumMap.PATTERN_LENGTH;
+      const offset = trackOffset + stepOffset;
       const a = a_map[offset];
       const b = b_map[offset];
       const c = c_map[offset];
@@ -78,33 +78,33 @@ function set_grids_xy(patternno, x, y, force = true) {
       // Crossfade between the values at the chosen drum nodes depending on the last 6 bits of x and y.
       const x_xfade = (x * 4) % 256; // x << 2
       const y_xfade = (y * 4) % 256; // y << 2
-      const trig_level = u8mix(u8mix(a, b, y_xfade), u8mix(c, d, y_xfade), x_xfade);
-      set_trig(patternno, stepIndex, trackIndex, trig_level);
+      const trigLevel = u8mix(u8mix(a, b, y_xfade), u8mix(c, d, y_xfade), x_xfade);
+      setTrig(patternIndex, stepIndex, trackIndex, trigLevel);
     }
   }
   grids_x = x;
   grids_y = y;
-  console.table(trigs[patternno]);
+  console.table(trigs[patternIndex]);
 }
 
 /**
  *
  *
- * @param {*} patternno
+ * @param {*} patternIndex
  * @param {*} step
  * @param {*} track
  * @param {*} value
  */
-function set_trig(patternno, step, track, value) {
-  trigs[patternno][track][step] = value;
+function setTrig(patternIndex, step, track, value) {
+  trigs[patternIndex][track][step] = value;
 }
 
 /**
  * 
  */
 export function setup() {
-  _init_trigs();
-  set_grids_xy(params.pattern.value, params.grids_pattern_x.value, params.grids_pattern_y.value);
+  initTrigs();
+  setGridsXY(params.pattern.value, params.gridsPatternX.value, params.gridsPatternY.value);
 }
 
 /**
