@@ -10,7 +10,7 @@ import patterns from './actions-patterns.js';
 export function generateScore(state, sampleData) {
   const { settings } = state;
   const { numSamples, numTracks } = settings;
-  const score = [0, 0, 1, 1];
+  const score = [0, 0, 0, 0, 1, 1, 1, 1];
   const tracks = {
     allIds: [],
     byId: {},
@@ -28,26 +28,27 @@ export function generateScore(state, sampleData) {
 function createTrack(state, sampleData, trackIndex) {
   const { settings } = state;
   const { numSamples, loopDurationInSecs } = settings;
-  const { duration, id: sampleId } = sampleData[Math.floor(Math.random() * numSamples)];
+  const { duration: sampleDuration, id: sampleId } = sampleData[Math.floor(Math.random() * numSamples)];
+  const numPatterns = 2;
   let playbackDuration = 0.5;
   let gain = 1;
   let pattern = createPattern(trackIndex);
 
-  if (duration >= loopDurationInSecs) {
+  if (sampleDuration >= loopDurationInSecs) {
     playbackDuration = loopDurationInSecs;
     gain = 0.1;
     pattern = [{ time: 0 }];
   }
 
-  const sampleStartOffset = duration > 3 ? Math.random() * (duration - playbackDuration) : 0;
+  const sampleStartOffset = playbackDuration < sampleDuration ? Math.random() * (sampleDuration - playbackDuration) : 0;
 
   return {
     gain,
     playbackDuration,
     sampleId,
-    sampleStartOffset,
+    sampleStartOffset,  
     patterns: [
-      createPattern(trackIndex),
+      pattern,
       createPattern(trackIndex),
     ],
   };
@@ -60,14 +61,17 @@ function createPattern(trackIndex) {
 
     case 1: {
       const pattern = [];
-      pattern.push({ time: Math.floor(Math.random() * 16) / 16 });
-      pattern.push({ time: Math.floor(Math.random() * 16) / 16 });
-      pattern.push({ time: Math.floor(Math.random() * 16) / 16 });
+      const numNotes = Math.ceil(Math.random() * 4);
+      for (let i = 0; i < numNotes; i++) {
+        const time = Math.floor(Math.random() * 16) / 16;
+        if (!pattern.find(note => note.time === time)) {
+          pattern.push({ time, });
+        }
+      }
       return pattern;
     }
 
     default: {
-
       const pattern = [];
       pattern.push({ time: Math.floor(Math.random() * 16) / 16 });
       return pattern;

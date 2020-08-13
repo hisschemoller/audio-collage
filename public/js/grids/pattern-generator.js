@@ -17,20 +17,15 @@ const drum_map = [
 ];
 
 const options_ = {
-  // clock_resolution,
-  // output_mode,
-  // output_clock,
-  // tap_tempo,
-  // gate_mode,
   swing: 0,
 };
 
 const settings_ = {
-  density: [192, 192, 192],
+  density: [100, 100, 100],
   options: {
     drums: {
       randomness: 0,
-      x: 0,
+      x: 2,
       y: 0,
     },
   },
@@ -133,13 +128,18 @@ function invertUint8Binary(value) {
   return value ^ 0xff;
 }
 
-export function setup() {
+/**
+ *
+ *
+ * @export
+ * @returns
+ */
+export function createPattern() {
   const pattern = [];
   for (let i = 0; i < kStepsPerPattern; i++) {
     step_ = i;
-    // pattern.push(EvaluateDrums());
     EvaluateDrums();
-    pattern.push([state_, state_ & 1 === 1, state_ & 2 === 2, state_ & 4 === 4]);
+    pattern.push([(state_ & 1) === 1, (state_ & 2) === 2, (state_ & 4) === 4]);
   }
-  console.table(pattern);
+  return pattern;
 }

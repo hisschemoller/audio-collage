@@ -1,5 +1,6 @@
 import { createUUID } from '../system/utils.js';
 import { generateScore } from './actions-generate.js';
+import { generateGridsScore } from './actions-generate-grids.js';
 
 const ADVANCE_TIME = 'ADVANCE_TIME';
 const BUFFERS_LOADED = 'BUFFERS_LOADED';
@@ -52,7 +53,8 @@ export default {
       .then(response => response.json())
       .then(sampleData => {
         sampleData.forEach(sound => sound.id = createUUID());
-        const { score, tracks } = generateScore(getState(), sampleData);
+        // const { score, tracks } = generateScore(getState(), sampleData);
+        const { score, tracks } = generateGridsScore(getState(), sampleData);
         dispatch({ type: GENERATE, sampleData, score, tracks });
       });
       // .catch((error) => {
