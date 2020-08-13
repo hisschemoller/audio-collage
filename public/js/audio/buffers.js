@@ -6,6 +6,11 @@ const buffers = {
   byId: {},
 };
 
+/**
+ * Provide audio buffer.
+ * @param {String} id Buffer ID.
+ * @returns {Object} AudioBuffer.
+ */
 export function getBuffer(id) {
   return buffers.byId[id].buffer;
 }

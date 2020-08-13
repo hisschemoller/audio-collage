@@ -1,6 +1,7 @@
-import { createUUID } from '../system/utils.js';
+import { createUUID } from '../util/utils.js';
 import { generateScore } from './actions-generate.js';
 import { generateGridsScore } from './actions-generate-grids.js';
+import { getDrums } from './selectors.js';
 
 const ADVANCE_TIME = 'ADVANCE_TIME';
 const BUFFERS_LOADED = 'BUFFERS_LOADED';
@@ -24,7 +25,7 @@ export default {
   buffersLoaded: () => ({ type: BUFFERS_LOADED }),
 
   DIRECTORY_ADD,
-  directoryAdd: () => ({ type: DIRECTORY_ADD, id: createUUID() }),
+  directoryAdd: sound => ({ type: DIRECTORY_ADD, id: createUUID(), sound }),
 
   DIRECTORY_PATH_CHANGE,
   directoryPathChange: (id, path) => ({ type: DIRECTORY_PATH_CHANGE, id, path }),
@@ -38,9 +39,10 @@ export default {
   GENERATE,
   generate: () => {
     return async (dispatch, getState, getActions) => {
-      const { settings } = getState();
+      const { directories, settings } = getState();
       const { numSamples } = settings;
-      const url = `/json?type=sound&amount=${numSamples}`
+      const { hat, kick, snare } = getDrums();
+      const url = `/json?type=sound&amount=${numSamples}&hat=${hat}&kick=${kick}&snare=${snare}`
       await fetch(url, {
         method: 'GET',
         cache: 'no-cache',
@@ -52,6 +54,7 @@ export default {
       })
       .then(response => response.json())
       .then(sampleData => {
+        console.log('sampleData', sampleData);
         sampleData.forEach(sound => sound.id = createUUID());
         // const { score, tracks } = generateScore(getState(), sampleData);
         const { score, tracks } = generateGridsScore(getState(), sampleData);

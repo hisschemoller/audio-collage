@@ -30,7 +30,7 @@ export default function reduce(state = initialState, action, actions = {}) {
   switch (action.type) {
 
     case actions.DIRECTORY_ADD: {
-      const { id } = action;
+      const { id, sound } = action;
       return {
         ...state,
         directories: {
@@ -40,6 +40,7 @@ export default function reduce(state = initialState, action, actions = {}) {
             [id]: {
               isEnabled: true,
               path: '',
+              sound,
             },
           },
         },

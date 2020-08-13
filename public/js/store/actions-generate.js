@@ -1,4 +1,4 @@
-import { createUUID } from '../system/utils.js';
+import { createUUID } from '../util/utils.js';
 import patterns from './actions-patterns.js';
 
 /**

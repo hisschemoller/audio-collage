@@ -3,7 +3,7 @@ import { setup as setupAudio, initAudio } from './audio/audio.js';
 import { setup as setupBuffers } from './audio/buffers.js';
 import { setup as setupPlayer } from './audio/player.js';
 import { setup as setupControls } from './view/controls.js';
-import { setup as setupDirectories } from './view/directories.js';
+import { setup as setupPaths } from './view/paths.js';
 import { setup as setupInfo } from './view/info.js';
 import { setup as setupSettings } from './view/settings.js';
 import { showDialog } from './view/dialog.js';
@@ -12,7 +12,7 @@ async function main() {
   setupAudio();
   setupBuffers();
   setupControls();
-  setupDirectories();
+  setupPaths();
   setupInfo();
   setupPlayer();
   setupSettings();

@@ -1,87 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Audio Collage</title>
-  <link rel="stylesheet" href="css/style.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Audio Collage</title>
+	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="top-row">
-    <div id="controls">
-      <div>
-        <label for="file-import">Import project...</label>
-        <input type="file" multiple="false" id="file-import" />
-      </div>
-      <div>
-        <button type="button" id="file-export">Export project...</button>
-      </div>
-      <div>
-        <button type="button" id="controls__generate">Generate</button>
-        <label for="controls__play">Play</label>
-        <input type="checkbox" id="controls__play" />
-      </div>
-    </div>
-    <div id="settings">
-      <h4>Settings</h4>
-      <div>
-        <label for="settings__loopduration">Loop duration</label>
-        <input type="number" id="settings__loopduration" />
-      </div>
-      <div>
-        <label for="settings__numsamples">Sample files</label>
-        <input type="number" id="settings__numsamples" />
-      </div>
-      <div>
-        <label for="settings__numtracks">Tracks</label>
-        <input type="number" id="settings__numtracks" />
-      </div>
-    </div>
-  </div>
-  <div id="dirs">
-    <h4>Audio folder locations</h4>
-    <button type="button" id="dirs__add">Add location</button>
-    <table id="dirs__list">
-      <tr>
-        <th>Path</th>
-        <th>Disable</th>
-        <th>Delete</th>
-      </tr>
-    </table>
-    <div>
-    </div>
-    
-  </div>
-  <div id="info"></div>
-  
-  <div class="dialog">
-    <div class="dialog__layer"></div>
-    <div class="dialog__window">
-      <div class="dialog__header">
-        <span class="header__label">header</span>
-      </div>
-      <div class="panel__viewport">
-        <div class="panel__content">
-          <span class="dialog__body">body</span>
-          <div class="dialog__controls">
-            <button type="button" class="btn dialog__reject">reject</button>
-            <button type="button" class="btn dialog__resolve">resolve</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+	<div id="top-row">
+		<div id="controls">
+			<div>
+				<label for="file-import">Import project...</label>
+				<input type="file" multiple="false" id="file-import" />
+			</div>
+			<div>
+				<button type="button" id="file-export">Export project...</button>
+			</div>
+			<div>
+				<button type="button" id="controls__generate">Generate</button>
+				<label for="controls__play">Play</label>
+				<input type="checkbox" id="controls__play" />
+			</div>
+		</div>
+		<div id="settings">
+			<h4>Settings</h4>
+			<div>
+				<label for="settings__loopduration">Loop duration</label>
+				<input type="number" id="settings__loopduration" />
+			</div>
+			<div>
+				<label for="settings__numsamples">Sample files</label>
+				<input type="number" id="settings__numsamples" />
+			</div>
+			<div>
+				<label for="settings__numtracks">Tracks</label>
+				<input type="number" id="settings__numtracks" />
+			</div>
+		</div>
+		<div id="info"></div>
+	</div>
+	<div id="paths"></div>
+	
+	<div class="dialog">
+		<div class="dialog__layer"></div>
+		<div class="dialog__window">
+			<div class="dialog__header">
+				<span class="header__label">header</span>
+			</div>
+			<div class="panel__viewport">
+				<div class="panel__content">
+					<span class="dialog__body">body</span>
+					<div class="dialog__controls">
+						<button type="button" class="btn dialog__reject">reject</button>
+						<button type="button" class="btn dialog__resolve">resolve</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
+	<template id="template-dirs">
+		<div class="dirs">
+			<div class="dirs__header">
+				<h4 class="dirs__label">Audio folder locations</h4>
+				<button type="button" class="dirs__add">Add location</button>
+			</div>
+			<table class="dirs__list">
+				<tr>
+					<th>Path</th>
+					<th>Disable</th>
+					<th>Delete</th>
+				</tr>
+			</table>
+		</div>
+	</template><!-- /template-dirs -->
 	<template id="template-dir">
 		<tr class="dir">
 			<td><input type="text" class="dir__path"></input></td>
-      <td><input type="checkbox" class="dir__disable"></input></td>
-      <td><button type="button" class="dir__delete">x</button></td>
+			<td><input type="checkbox" class="dir__disable"></input></td>
+			<td><button type="button" class="dir__delete">x</button></td>
 		</tr>
-  </template><!-- /template-setting-integer -->
-  
-  <script src="js/main.js" type="module"></script>
+	</template><!-- /template-dir -->
+	
+	<script src="js/main.js" type="module"></script>
 </body>
 </html>

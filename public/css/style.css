@@ -31,17 +31,24 @@ body {
   text-align: right;
   width: 50px;
 }
-#dirs{
+#paths {
   padding: 10px;
 }
-#dirs h4 {
-  display: inline;
-}
-#dirs__list {
+.dirs {
+  margin-bottom: 10px;
   width: 80%;
 }
-#dirs__list td:nth-of-type(2),
-#dirs__list td:nth-of-type(3) {
+.dirs__label {
+  display: inline;
+}
+.dirs__add {
+  float: right;
+}
+.dirs__list {
+  width: 100%;
+}
+.dirs__list td:nth-of-type(2),
+.dirs__list td:nth-of-type(3) {
   width: 70px;
 }
 .dir__path {

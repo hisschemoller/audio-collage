@@ -25,7 +25,7 @@ const settings_ = {
   options: {
     drums: {
       randomness: 0,
-      x: 2,
+      x: 12,
       y: 0,
     },
   },

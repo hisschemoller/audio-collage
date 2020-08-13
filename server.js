@@ -6,8 +6,10 @@ const { getAudioDurationInSeconds } = require('get-audio-duration');
 
 const app = express();
 const port = process.env.PORT || 3015;
-const allData = [];
-let numFiles = 0;
+let allData = {
+  allIds: [],
+  byId: {},
+};
 
 // set public folder as root
 app.use(express.static('public'));
@@ -20,10 +22,10 @@ app.listen(port, () => {
 
 // serve file location data as JSON
 app.get('/json', function (req, res) {
-  const { amount, type } = req.query;
+  const { amount, type, hat, kick, snare } = req.query;
   switch (type) {
     case 'sound':
-      serveSoundData(res, amount);
+      serveSoundData(res, amount, hat, kick, snare);
       break;
   }
 });
@@ -47,21 +49,53 @@ app.post('/paths', (req, res) => {
  *
  *
  * @param {*} response
- * @param {*} amount
+ * @param {Number} amount
+ * @param {Boolean} hat
+ * @param {Boolean} kick
+ * @param {Boolean} snare
  */
-function serveSoundData(response, amount) {
+function serveSoundData(response, amount, hat, kick, snare) {
   const data = [];
-  for (let i = 0, n = amount; i < n; i++) {
-    const fileIndex = Math.floor(Math.random() * numFiles);
-    allData.forEach(dirData => {
-      if (fileIndex >= dirData.startIndex && fileIndex < dirData.startIndex + dirData.audioFiles.length) {
-        data.push({
-          dir: dirData.dir,
-          file: dirData.audioFiles[fileIndex - dirData.startIndex]
-        });
-      }
-    });
+
+  // the general sounds
+  if (allData.byId.general) {
+    const { dirData, numFiles } = allData.byId.general;
+    for (let i = 0, n = amount; i < n; i++) {
+      dirData.forEach(ddata => {
+        const fileIndex = Math.floor(Math.random() * numFiles);
+        if (fileIndex >= ddata.startIndex && fileIndex < ddata.startIndex + ddata.audioFiles.length) {
+          data.push({
+            dir: ddata.path,
+            file: ddata.audioFiles[fileIndex - ddata.startIndex],
+            sound: 'general',
+          });
+        }
+      });
+    }
   }
+
+  // the drum sounds
+  [
+    { key: 'hat', value: hat },
+    { key: 'kick', value: kick },
+    { key: 'snare', value: snare },
+  ].forEach(sound => {
+    if (sound.value && allData.byId[sound.key]) {
+      const { dirData, numFiles } =  allData.byId[sound.key];
+      dirData.forEach(ddata => {
+        const fileIndex = Math.floor(Math.random() * numFiles);
+        if (fileIndex >= ddata.startIndex && fileIndex < ddata.startIndex + ddata.audioFiles.length) {
+          data.push({
+            dir: ddata.path,
+            file: ddata.audioFiles[fileIndex - ddata.startIndex],
+            sound: sound.key,
+          });
+        }
+      });
+    }
+  });
+
+  console.log('data', data);
 
   // get the audio duration of each file
   Promise.allSettled(data.map(getAudioDuration)).then(results => {
@@ -94,15 +128,22 @@ function getAudioDuration(data) {
  * @param {Array} dirs 
  */
 function getAllDirectories(dirs) {
-  allData.length = 0;
+  allData = {
+    allIds: [],
+    byId: {},
+  };
+
   Promise.allSettled(dirs.map(getAllFiles)).then(() => {
-    numFiles = 0;
-    allData.forEach(dirData => {
-      dirData.startIndex = numFiles;
-      numFiles += dirData.audioFiles.length;
-      console.log(`dir data: ${dirData.startIndex} - ${dirData.audioFiles.length} - ${numFiles}`);
+    allData.allIds.forEach(soundCategoryId => {
+      const soundCategory = allData.byId[soundCategoryId];
+      soundCategory.numFiles = 0;
+      soundCategory.dirData.forEach(dirData => {
+        dirData.startIndex = soundCategory.numFiles;
+        soundCategory.numFiles += dirData.audioFiles.length;
+        console.log(`dir data: ${dirData.startIndex} - ${dirData.audioFiles.length} - ${soundCategory.numFiles}`);
+      });
+      console.log('num files', soundCategory.numFiles);
     });
-    console.log('num files', numFiles);
   });
 }
 
@@ -112,9 +153,10 @@ function getAllDirectories(dirs) {
  * @returns {Object} Promise.
  */
 function getAllFiles(dir) {
+  const { path, sound } = dir;
   return new Promise((resolve, reject) => {
     let audioFiles = [];
-    fs.readdir(dir, (err, files) => {
+    fs.readdir(path, (err, files) => {
       if (err) {
         console.log('err', err);
         reject();
@@ -124,10 +166,16 @@ function getAllFiles(dir) {
             audioFiles.push(filename);
           }
         });
-        allData.push({
-          dir: dir,
-          audioFiles: audioFiles
-        });
+
+        if (!allData.allIds.includes(sound)) {
+          allData.allIds.push(sound);
+          allData.byId[sound] = {
+            dirData: [],
+            numFiles: 0,
+          };
+        }
+
+        allData.byId[sound].dirData.push({ path, audioFiles, });
         resolve();
       }
     });

@@ -7,6 +7,10 @@ let loopDurationInSecs = 1;
 let next = 0;
 let isRunning = false;
 
+/**
+ * Provide the AudioContext.
+ * @returns {Object} AudioContext.
+ */
 export function getContext() {
   return ctx;
 }

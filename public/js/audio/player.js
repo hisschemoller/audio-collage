@@ -50,7 +50,6 @@ export function play(state, action) {
   const {settings, score, tracks } = state;
   const { loopDurationInSecs } = settings;
   const patternIndex = score[index % score.length];
-  console.log('patternIndex', patternIndex);
 
   tracks.allIds.forEach(trackId => {
     const { gain, patterns, playbackDuration, sampleId, sampleStartOffset, } = tracks.byId[trackId];
