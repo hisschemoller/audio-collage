@@ -3,7 +3,6 @@ import { U8Mix, U8U8MulShift8 } from './avril.js';
 
 const kNumParts = 3;
 const kStepsPerPattern = 32;
-
 const part_perturbation_ = new Array(kNumParts);
 let step_ = 0;
 let state_ = 0;
@@ -134,7 +133,13 @@ function invertUint8Binary(value) {
  * @export
  * @returns
  */
-export function createPattern() {
+export function createPattern(x = 0, y = 0) {
+
+  // settings
+  settings_.options.drums.x = Math.max(0, Math.min(x, 255));
+  settings_.options.drums.y = Math.max(0, Math.min(y, 255));
+
+  // generate
   const pattern = [];
   for (let i = 0; i < kStepsPerPattern; i++) {
     step_ = i;

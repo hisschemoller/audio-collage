@@ -9,7 +9,11 @@ export function generateGridsScore(state, sampleData) {
     allIds: [],
     byId: {},
   };
-  const gridsPattern = createGridsPattern();
+
+  const x = Math.floor(Math.random() * 256);
+  const y = Math.floor(Math.random() * 256);
+  console.log('x', x, 'y', y);
+  const gridsPattern = createGridsPattern(x, y);
 
   soundNames.forEach((soundName, trackIndex) => {
     const drums = getDrums();

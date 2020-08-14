@@ -54,7 +54,6 @@ export default {
       })
       .then(response => response.json())
       .then(sampleData => {
-        console.log('sampleData', sampleData);
         sampleData.forEach(sound => sound.id = createUUID());
         // const { score, tracks } = generateScore(getState(), sampleData);
         const { score, tracks } = generateGridsScore(getState(), sampleData);
