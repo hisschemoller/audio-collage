@@ -4,28 +4,23 @@ import { getDrums } from './selectors.js';
 import { createPattern as createGridsPattern } from '../grids/pattern-generator.js';
 
 export function generateGridsScore(state, sampleData) {
-  const score = [0];
+  const drums = getDrums();
+  const numPatterns = 4;
+  const score = [0, 1, 2, 3];
   const tracks = {
     allIds: [],
     byId: {},
   };
-
   const x = Math.floor(Math.random() * 256);
   const y = Math.floor(Math.random() * 256);
+  const randomness = 255;
   console.log('x', x, 'y', y);
-  const gridsPattern = createGridsPattern(x, y);
 
+  // create the tracks
   soundNames.forEach((soundName, trackIndex) => {
-    const drums = getDrums();
     if (drums[soundName]) {
       const sample = sampleData.find(sample => sample.sound === soundName);
       const sampleId = sample.id;
-      const pattern = gridsPattern.reduce((accumulator, step, index) => {
-        if (step[trackIndex]) {
-          return [ ...accumulator, { time: index / 32 }];
-        }
-        return accumulator;
-      }, []);
       const trackId = createUUID();
 
       tracks.allIds.push(trackId);
@@ -34,12 +29,26 @@ export function generateGridsScore(state, sampleData) {
         playbackDuration: 0.5,
         sampleId,
         sampleStartOffset: 0,  
-        patterns: [
-          pattern,
-        ],
+        patterns: [],
       };
     }
   });
+
+  // create the patterns within the tracks
+  for (let i = 0; i < numPatterns; i++) {
+    const gridsPattern = createGridsPattern(x, y, randomness);
+    soundNames.forEach((soundName, trackIndex) => {
+      if (drums[soundName]) {
+        const pattern = gridsPattern.reduce((accumulator, step, index) => {
+          if (step[trackIndex]) {
+            return [ ...accumulator, { time: index / 32 }];
+          }
+          return accumulator;
+        }, []);
+        tracks.byId[tracks.allIds[trackIndex]].patterns.push(pattern);
+      }
+    });
+  }
 
   return { score, tracks };
 }

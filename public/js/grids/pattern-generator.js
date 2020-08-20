@@ -24,7 +24,7 @@ const settings_ = {
   options: {
     drums: {
       randomness: 0,
-      x: 12,
+      x: 0,
       y: 0,
     },
   },
@@ -133,11 +133,12 @@ function invertUint8Binary(value) {
  * @export
  * @returns
  */
-export function createPattern(x = 0, y = 0) {
+export function createPattern(x = 0, y = 0, randomness = 0,) {
 
   // settings
   settings_.options.drums.x = Math.max(0, Math.min(x, 255));
   settings_.options.drums.y = Math.max(0, Math.min(y, 255));
+  settings_.options.drums.randomness = Math.max(0, Math.min(randomness, 255));
 
   // generate
   const pattern = [];
