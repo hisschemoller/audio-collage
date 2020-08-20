@@ -14,7 +14,6 @@ export function generateGridsScore(state, sampleData) {
   const x = Math.floor(Math.random() * 256);
   const y = Math.floor(Math.random() * 256);
   const randomness = 255;
-  console.log('x', x, 'y', y);
 
   // create the tracks
   soundNames.forEach((soundName, trackIndex) => {
@@ -36,7 +35,10 @@ export function generateGridsScore(state, sampleData) {
 
   // create the patterns within the tracks
   for (let i = 0; i < numPatterns; i++) {
-    const gridsPattern = createGridsPattern(x, y, randomness);
+    const xRandom = Math.min(255, x + Math.floor(Math.random() * 10));
+    const yRandom = Math.min(255, y + Math.floor(Math.random() * 10));
+    const gridsPattern = createGridsPattern(xRandom, yRandom, randomness);
+    console.log('x', x, 'y', yRandom);
     soundNames.forEach((soundName, trackIndex) => {
       if (drums[soundName]) {
         const pattern = gridsPattern.reduce((accumulator, step, index) => {
