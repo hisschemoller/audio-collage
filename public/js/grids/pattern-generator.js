@@ -44,18 +44,18 @@ function Reset() {
  * @returns {Number} 
  */
 function ReadDrumMap(step, instrument, x, y) {
-  const i = x >> 6;
-  const j = y >> 6;
+  const i = (x >> 6) & 255;
+  const j = (y >> 6) & 255;
   const a_map = drum_map[i][j];
   const b_map = drum_map[i + 1][j];
   const c_map = drum_map[i][j + 1];
   const d_map = drum_map[i + 1][j + 1];
-  const offset = (instrument * kStepsPerPattern) + step;
+  const offset = ((instrument * kStepsPerPattern) + step) & 255;
   const a = a_map[offset]; // pgm_read_byte(a_map + offset);
   const b = b_map[offset]; // pgm_read_byte(b_map + offset);
   const c = c_map[offset]; // pgm_read_byte(c_map + offset);
   const d = d_map[offset]; // pgm_read_byte(d_map + offset);
-  return U8Mix(U8Mix(a, b, x << 2), U8Mix(c, d, x << 2), y << 2);
+  return U8Mix(U8Mix(a, b, (x << 2) & 255), U8Mix(c, d, (x << 2) & 255), (y << 2) & 255);
 }
 
 /**
@@ -68,7 +68,7 @@ function EvaluateDrums() {
   // At the beginning of a pattern, decide on perturbation levels.
   if (step_ == 0) {
     for (let i = 0; i < kNumParts; i++) {
-      const randomness = options_.swing ? 0 : settings_.options.drums.randomness >> 2;
+      const randomness = options_.swing ? 0 : (settings_.options.drums.randomness >> 2) & 255;
       part_perturbation_[i] = U8U8MulShift8(RandomGetByte(), randomness);
     }
   }
@@ -88,13 +88,15 @@ function EvaluateDrums() {
       level = 255;
     }
     const threshold = invertUint8Binary(settings_.density[i]); // ~ invert all bits
+    // console.log('threshold', threshold, level);
     if (level > threshold) {
       if (level > 192) {
+        console.log('ja');
         accent_bits |= instrument_mask;
       }
       state_ |= instrument_mask;
     }
-    instrument_mask <<= 1;
+    instrument_mask = (instrument_mask << 1) & 255;
 
     levels.push(level);
   }
@@ -102,7 +104,7 @@ function EvaluateDrums() {
   //   state_ |= accent_bits ? OUTPUT_BIT_COMMON : 0;
   //   state_ |= step_ == 0 ? OUTPUT_BIT_RESET : 0;
   // } else {
-    state_ |= accent_bits << 3;
+    state_ |= (accent_bits << 3) & 255;
   // }
 
   return levels;
@@ -133,12 +135,15 @@ function invertUint8Binary(value) {
  * @export
  * @returns
  */
-export function createPattern(x = 0, y = 0, randomness = 0,) {
+export function createPattern(x = 0, y = 0, randomness = 0, density = 100) {
 
   // settings
   settings_.options.drums.x = Math.max(0, Math.min(x, 255));
   settings_.options.drums.y = Math.max(0, Math.min(y, 255));
   settings_.options.drums.randomness = Math.max(0, Math.min(randomness, 255));
+  settings_.density[0] = Math.max(0, Math.min(density, 255));
+  settings_.density[1] = Math.max(0, Math.min(density, 255));
+  settings_.density[2] = Math.max(0, Math.min(density, 255));
 
   // generate
   const pattern = [];

@@ -13,7 +13,9 @@
  * @returns {Number}
  */
 export function U8Mix(a, b, balance) {
-  return a * (255 - balance) + b * balance >> 8;
+  const aBalanced = (a * (255 - balance)) & 255;
+  const bBalanced = (b * ((balance >> 8) & 255)) & 255;
+  return (aBalanced + bBalanced) & 255;
 }
 
 /**
@@ -29,5 +31,5 @@ export function U8Mix(a, b, balance) {
  * @returns {Number}
  */
 export function U8U8MulShift8(a, b) {
-  return (a * b) >> 8;
+  return (((a * b) & 255) >> 8) & 255;
 }
