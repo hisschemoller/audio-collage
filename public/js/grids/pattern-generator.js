@@ -63,7 +63,8 @@ function ReadDrumMap(step, instrument, x, y) {
  */
 function EvaluateDrums() {
   state_ = 0;
-  const levels = [];
+  const levels = [0, 0, 0];
+  const velocities = [0, 0, 0];
 
   // At the beginning of a pattern, decide on perturbation levels.
   if (step_ == 0) {
@@ -88,17 +89,22 @@ function EvaluateDrums() {
       level = 255;
     }
     const threshold = invertUint8Binary(settings_.density[i]); // ~ invert all bits
-    // console.log('threshold', threshold, level);
     if (level > threshold) {
       if (level > 192) {
-        console.log('ja');
         accent_bits |= instrument_mask;
       }
       state_ |= instrument_mask;
+      
+      levels[i] = level;
+
+      // level is between threshold and 255, convert to velocity 50 to 127
+      const levelNormalized = (level - threshold) / (255 - threshold);
+      velocities[i] = 50 + Math.floor(levelNormalized * (127 - 50));
+      
     }
     instrument_mask = (instrument_mask << 1) & 255;
 
-    levels.push(level);
+    // levels.push(level);
   }
   // if (output_clock()) {
   //   state_ |= accent_bits ? OUTPUT_BIT_COMMON : 0;
@@ -107,7 +113,7 @@ function EvaluateDrums() {
     state_ |= (accent_bits << 3) & 255;
   // }
 
-  return levels;
+  return velocities;
 }
 
 /**
@@ -149,8 +155,9 @@ export function createPattern(x = 0, y = 0, randomness = 0, density = 100) {
   const pattern = [];
   for (let i = 0; i < kStepsPerPattern; i++) {
     step_ = i;
-    EvaluateDrums();
-    pattern.push([(state_ & 1) === 1, (state_ & 2) === 2, (state_ & 4) === 4]);
+    const velocities = EvaluateDrums();
+    // pattern.push([(state_ & 1) === 1, (state_ & 2) === 2, (state_ & 4) === 4]);
+    pattern.push([ ...velocities ]);
   }
   return pattern;
 }

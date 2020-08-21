@@ -3,17 +3,17 @@ import { allocVoice, freeVoice, getVoices } from './voices.js';
 import { getContext } from './audio.js';
 import { getBuffer } from './buffers.js';
 
-const createVoice = function(when, sampleStartOffset, playbackDuration, buffer) {
+const createVoice = function(when, sampleStartOffset, playbackDuration, buffer, velocity) {
   const ctx = getContext();
   const voice = allocVoice();
+  const gainValue = velocityToGain(velocity);
 
   voice.source = ctx.createBufferSource();
   voice.source.buffer = buffer;
   voice.source.connect(voice.gain);
-
   voice.gain.gain.setValueAtTime(0.0001, when);
-  voice.gain.gain.exponentialRampToValueAtTime(1, when + 0.004);
-  voice.gain.gain.setValueAtTime(0.0001, when + playbackDuration);
+  voice.gain.gain.exponentialRampToValueAtTime(gainValue, when + 0.004);
+  voice.gain.gain.setValueAtTime(gainValue, when + playbackDuration);
   voice.gain.gain.exponentialRampToValueAtTime(0.0001, when + playbackDuration + 0.004);
 
   voice.source.onended = function(e) {
@@ -55,7 +55,8 @@ export function play(state, action) {
     const { gain, patterns, playbackDuration, sampleId, sampleStartOffset, } = tracks.byId[trackId];
     const buffer = getBuffer(sampleId);
     patterns[patternIndex].forEach(note => {
-      createVoice(when + (loopDurationInSecs * note.time), sampleStartOffset, playbackDuration, buffer);
+      const { velocity, time, } = note;
+      createVoice(when + (loopDurationInSecs * time), sampleStartOffset, playbackDuration, buffer, velocity);
     });
   });
 }
@@ -79,3 +80,12 @@ function stopAllVoices() {
     }
   });
 };
+
+/**
+ * Convert MIDI velocity to gain level.
+ * @param {Number} velocity
+ * @returns
+ */
+function velocityToGain(velocity) {
+  return velocity ** 2 / 127 ** 2;
+}
