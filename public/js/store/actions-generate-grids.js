@@ -14,6 +14,8 @@ export function generateGridsScore(state, sampleData) {
   const x = Math.floor(Math.random() * 256);
   const y = Math.floor(Math.random() * 256);
   const randomness = 100;
+  const swing = 56;
+  const swingTime = (1 / 16) * ((swing - 50) / 100);
 
   // create the tracks
   soundNames.forEach((soundName, trackIndex) => {
@@ -43,9 +45,22 @@ export function generateGridsScore(state, sampleData) {
     soundNames.forEach((soundName, trackIndex) => {
       if (drums[soundName]) {
         const pattern = gridsPattern.reduce((accumulator, step, index) => {
+          let time = index / 32;
+          switch (index % 4) {
+            case 0:
+              // keep on the beat
+              break;
+            case 2:
+              time += swingTime;
+              break;
+            case 1:
+            case 3:
+              time += (swingTime / 2);
+              break;
+          }
           if (step[trackIndex]) {
             return [ ...accumulator, { 
-              time: index / 32, 
+              time,
               velocity: step[trackIndex],
             }];
           }
