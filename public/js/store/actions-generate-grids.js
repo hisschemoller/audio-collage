@@ -20,15 +20,14 @@ export function generateGridsScore(state, sampleData) {
   // create the tracks
   soundNames.forEach((soundName, trackIndex) => {
     if (drums[soundName]) {
-      const sample = sampleData.find(sample => sample.sound === soundName);
-      const sampleId = sample.id;
+      const { duration, id, } = sampleData.find(sample => sample.sound === soundName);
       const trackId = createUUID();
 
       tracks.allIds.push(trackId);
       tracks.byId[trackId] = {
         gain: 1,
-        playbackDuration: 0.5,
-        sampleId,
+        playbackDuration: duration,
+        sampleId: id,
         sampleStartOffset: 0,  
         patterns: [],
       };
