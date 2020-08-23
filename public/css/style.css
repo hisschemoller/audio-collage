@@ -39,7 +39,10 @@ body {
   width: 80%;
 }
 .dirs__label {
-  display: inline;
+  display: inline-block;
+}
+.dirs__label:first-letter {
+  text-transform: capitalize;
 }
 .dirs__add {
   float: right;
@@ -55,10 +58,23 @@ body {
   width: 100%;
 }
 table {
-  border: 1px solid #999;
+  border: none; /* 1px solid #999; */
+}
+th {
+  background-color: #ccc;
+  font-weight: normal;
+  padding: 5px 10px;
+  text-align: left;
 }
 td {
-  border: 1px solid #999;
+  background-color: #eee;
+  border: none; /* 1px solid #999; */
   padding: 5px 10px;
-  text-align: right;
+  text-align: left;
+}
+td input[type='text'] {
+  border: none;
+}
+td .dir__delete {
+  border: none;
 }
