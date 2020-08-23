@@ -8,7 +8,7 @@ import { setup as setupInfo } from './view/info.js';
 import { setup as setupSettings } from './view/settings.js';
 import { showDialog } from './view/dialog.js';
 
-async function main() {
+function main() {
   setupAudio();
   setupBuffers();
   setupControls();
@@ -21,8 +21,8 @@ async function main() {
     header: 'Audio Collage', 
     body: 'Click Ok to initialise the audio engine.',
     resolve: 'Ok',
-    resolveCb: () => {
-      initAudio();
+    resolveCb: async () => {
+      await initAudio();
       persist();
     },
   });

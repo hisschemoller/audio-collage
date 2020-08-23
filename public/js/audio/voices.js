@@ -37,10 +37,15 @@ export function getVoices() {
 /**
  * Create the bank of reusable voice objects.
  * [source]->[pan]->[gain]->[destination]
+ *               +->[gain]->[convolver]
  * @param {Object} ctx AudioContext.
+ * @param {Object} convolver Impulse response convolver reverb.
  */
-export function setup(ctx) {
+export function setup(ctx, convolver) {
 	for (let i = 0; i < numVoices; i++) {
+		const convolverSendGain = ctx.createGain();
+		convolverSendGain.connect(convolver);
+
 		const gain = ctx.createGain();
 		gain.connect(ctx.destination);
 
@@ -48,6 +53,7 @@ export function setup(ctx) {
 		pan.connect(gain);
 
 		voices.push({
+			convolverSendGain,
 			index: i,
 			isPlaying: false,
 			gain,

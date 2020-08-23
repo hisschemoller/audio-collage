@@ -30,11 +30,11 @@ export function play(state, action) {
   const patternIndex = score[index % score.length];
 
   tracks.allIds.forEach(trackId => {
-    const { gain, pan, patterns, playbackDuration, sampleId, sampleStartOffset, } = tracks.byId[trackId];
+    const { gain, reverbSendGain, pan, patterns, playbackDuration, sampleId, sampleStartOffset, } = tracks.byId[trackId];
     const buffer = getBuffer(sampleId);
     patterns[patternIndex].forEach(note => {
       const { velocity, time, } = note;
-      startVoice(when + (loopDurationInSecs * time), sampleStartOffset, playbackDuration, buffer, velocity, pan);
+      startVoice(when + (loopDurationInSecs * time), sampleStartOffset, playbackDuration, buffer, velocity, pan, reverbSendGain);
     });
   });
 }
@@ -56,7 +56,7 @@ export function setup() {
  * @param {*} velocity
  * @param {*} pan
  */
-function startVoice(when, sampleStartOffset, playbackDuration, buffer, velocity, pan = 0) {
+function startVoice(when, sampleStartOffset, playbackDuration, buffer, velocity, pan = 0, reverbSendGain = 0) {
   const ctx = getContext();
   const voice = allocVoice();
   const gainValue = velocityToGain(velocity);
@@ -64,11 +64,13 @@ function startVoice(when, sampleStartOffset, playbackDuration, buffer, velocity,
   voice.source = ctx.createBufferSource();
   voice.source.buffer = buffer;
   voice.source.connect(voice.gain);
+  voice.source.connect(voice.convolverSendGain);
   voice.gain.gain.setValueAtTime(0.0001, when);
   voice.gain.gain.exponentialRampToValueAtTime(gainValue, when + 0.004);
   voice.gain.gain.setValueAtTime(gainValue, when + playbackDuration);
   voice.gain.gain.exponentialRampToValueAtTime(0.0001, when + playbackDuration + 0.004);
   voice.pan.pan.setValueAtTime(pan, when);
+  voice.convolverSendGain.gain.setValueAtTime(reverbSendGain, when);
 
   voice.source.onended = function(e) {
     voice.source.disconnect();

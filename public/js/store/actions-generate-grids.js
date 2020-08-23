@@ -28,8 +28,9 @@ export function generateGridsScore(state, sampleData) {
         gain: 1,
         pan: soundName === HAT ? -0.2 : soundName === SNARE ? 0.2 : 0,
         playbackDuration: duration,
+        reverbSendGain: soundName === HAT ? 0.2 : soundName === SNARE ? 0.03 : 0,
         sampleId: id,
-        sampleStartOffset: 0,  
+        sampleStartOffset: 0,
         patterns: [],
       };
     }

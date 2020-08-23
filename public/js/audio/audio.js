@@ -1,4 +1,5 @@
 import { dispatch, getActions, getState, STATE_CHANGE, } from '../store/store.js';
+import { setup as setupStudio } from './studio.js';
 import { setup as setupVoices } from './voices.js';
 
 let ctx;
@@ -40,11 +41,20 @@ function handleStateChanges(e) {
   }
 }
 
-export function initAudio() {
-  if (!ctx) {
-    ctx = new (window.AudioContext || window.webkitAudioContext)();
-    setupVoices(ctx);
-  }
+export async function initAudio() {
+  return new Promise((resolve, reject) => {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      setupStudio(ctx).then(convolver => {
+        setupVoices(ctx, convolver);
+        resolve();
+      });
+
+      
+    } else {
+      resolve();
+    }
+  });
 }
 
 function run() {
