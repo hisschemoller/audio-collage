@@ -3,28 +3,6 @@ import { allocVoice, freeVoice, getVoices } from './voices.js';
 import { getContext } from './audio.js';
 import { getBuffer } from './buffers.js';
 
-const createVoice = function(when, sampleStartOffset, playbackDuration, buffer, velocity) {
-  const ctx = getContext();
-  const voice = allocVoice();
-  const gainValue = velocityToGain(velocity);
-
-  voice.source = ctx.createBufferSource();
-  voice.source.buffer = buffer;
-  voice.source.connect(voice.gain);
-  voice.gain.gain.setValueAtTime(0.0001, when);
-  voice.gain.gain.exponentialRampToValueAtTime(gainValue, when + 0.004);
-  voice.gain.gain.setValueAtTime(gainValue, when + playbackDuration);
-  voice.gain.gain.exponentialRampToValueAtTime(0.0001, when + playbackDuration + 0.004);
-
-  voice.source.onended = function(e) {
-    voice.source.disconnect();
-    freeVoice(voice);
-  };
-
-  voice.source.start(when, sampleStartOffset);
-  voice.source.stop(when + playbackDuration);
-};
-
 /**
  * Handle application state changes.
  * @param {Event} e Custom event.
@@ -52,11 +30,11 @@ export function play(state, action) {
   const patternIndex = score[index % score.length];
 
   tracks.allIds.forEach(trackId => {
-    const { gain, patterns, playbackDuration, sampleId, sampleStartOffset, } = tracks.byId[trackId];
+    const { gain, pan, patterns, playbackDuration, sampleId, sampleStartOffset, } = tracks.byId[trackId];
     const buffer = getBuffer(sampleId);
     patterns[patternIndex].forEach(note => {
       const { velocity, time, } = note;
-      createVoice(when + (loopDurationInSecs * time), sampleStartOffset, playbackDuration, buffer, velocity);
+      startVoice(when + (loopDurationInSecs * time), sampleStartOffset, playbackDuration, buffer, velocity, pan);
     });
   });
 }
@@ -67,6 +45,39 @@ export function play(state, action) {
 export function setup() {
   document.addEventListener(STATE_CHANGE, handleStateChanges);
 }
+
+/**
+ *
+ *
+ * @param {*} when
+ * @param {*} sampleStartOffset
+ * @param {*} playbackDuration
+ * @param {*} buffer
+ * @param {*} velocity
+ * @param {*} pan
+ */
+function startVoice(when, sampleStartOffset, playbackDuration, buffer, velocity, pan = 0) {
+  const ctx = getContext();
+  const voice = allocVoice();
+  const gainValue = velocityToGain(velocity);
+
+  voice.source = ctx.createBufferSource();
+  voice.source.buffer = buffer;
+  voice.source.connect(voice.gain);
+  voice.gain.gain.setValueAtTime(0.0001, when);
+  voice.gain.gain.exponentialRampToValueAtTime(gainValue, when + 0.004);
+  voice.gain.gain.setValueAtTime(gainValue, when + playbackDuration);
+  voice.gain.gain.exponentialRampToValueAtTime(0.0001, when + playbackDuration + 0.004);
+  voice.pan.pan.setValueAtTime(pan, when);
+
+  voice.source.onended = function(e) {
+    voice.source.disconnect();
+    freeVoice(voice);
+  };
+
+  voice.source.start(when, sampleStartOffset);
+  voice.source.stop(when + playbackDuration);
+};
 
 /**
  * Stop all scheduled patterns.

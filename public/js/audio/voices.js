@@ -36,6 +36,7 @@ export function getVoices() {
 
 /**
  * Create the bank of reusable voice objects.
+ * [source]->[pan]->[gain]->[destination]
  * @param {Object} ctx AudioContext.
  */
 export function setup(ctx) {
@@ -43,10 +44,14 @@ export function setup(ctx) {
 		const gain = ctx.createGain();
 		gain.connect(ctx.destination);
 
+		const pan = ctx.createStereoPanner();
+		pan.connect(gain);
+
 		voices.push({
 			index: i,
 			isPlaying: false,
 			gain,
+			pan,
 			source: null,
 			timerId: null,
 		});
