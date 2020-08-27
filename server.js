@@ -82,8 +82,8 @@ function serveSoundData(response, amount, hat, kick, snare) {
   ].forEach(sound => {
     if (sound.value && allData.byId[sound.key]) {
       const { dirData, numFiles } =  allData.byId[sound.key];
+      const fileIndex = Math.floor(Math.random() * numFiles);
       dirData.forEach(ddata => {
-        const fileIndex = Math.floor(Math.random() * numFiles);
         if (fileIndex >= ddata.startIndex && fileIndex < ddata.startIndex + ddata.audioFiles.length) {
           data.push({
             dir: ddata.path,
@@ -94,8 +94,6 @@ function serveSoundData(response, amount, hat, kick, snare) {
       });
     }
   });
-
-  console.log('data', data);
 
   // get the audio duration of each file
   Promise.allSettled(data.map(getAudioDuration)).then(results => {
@@ -140,9 +138,7 @@ function getAllDirectories(dirs) {
       soundCategory.dirData.forEach(dirData => {
         dirData.startIndex = soundCategory.numFiles;
         soundCategory.numFiles += dirData.audioFiles.length;
-        console.log(`dir data: ${dirData.startIndex} - ${dirData.audioFiles.length} - ${soundCategory.numFiles}`);
       });
-      console.log('num files', soundCategory.numFiles);
     });
   });
 }
