@@ -49,7 +49,7 @@ app.post('/paths', (req, res) => {
  *
  *
  * @param {*} response
- * @param {Number} amount
+ * @param {Number} amount Amount of general samples
  * @param {Boolean} hat
  * @param {Boolean} kick
  * @param {Boolean} snare
@@ -60,13 +60,14 @@ function serveSoundData(response, amount, hat, kick, snare) {
   // the general sounds
   if (allData.byId.general) {
     const { dirData, numFiles } = allData.byId.general;
-    for (let i = 0, n = amount; i < n; i++) {
-      dirData.forEach(ddata => {
-        const fileIndex = Math.floor(Math.random() * numFiles);
-        if (fileIndex >= ddata.startIndex && fileIndex < ddata.startIndex + ddata.audioFiles.length) {
+    for (let i = 0; i < amount; i++) {
+      const fileIndex = Math.floor(Math.random() * numFiles);
+      dirData.forEach(directory => {
+        const { audioFiles, path, startIndex } = directory;
+        if (fileIndex >= startIndex && fileIndex < startIndex + audioFiles.length) {
           data.push({
-            dir: ddata.path,
-            file: ddata.audioFiles[fileIndex - ddata.startIndex],
+            dir: path,
+            file: audioFiles[fileIndex - startIndex],
             sound: 'general',
           });
         }
@@ -76,19 +77,21 @@ function serveSoundData(response, amount, hat, kick, snare) {
 
   // the drum sounds
   [
-    { key: 'hat', value: hat },
-    { key: 'kick', value: kick },
-    { key: 'snare', value: snare },
+    { soundTypeId: 'hat', isRequested: hat },
+    { soundTypeId: 'kick', isRequested: kick },
+    { soundTypeId: 'snare', isRequested: snare },
   ].forEach(sound => {
-    if (sound.value && allData.byId[sound.key]) {
-      const { dirData, numFiles } =  allData.byId[sound.key];
+    const { soundTypeId, isRequested } = sound;
+    if (isRequested && allData.byId[soundTypeId]) {
+      const { dirData, numFiles } =  allData.byId[soundTypeId];
       const fileIndex = Math.floor(Math.random() * numFiles);
-      dirData.forEach(ddata => {
-        if (fileIndex >= ddata.startIndex && fileIndex < ddata.startIndex + ddata.audioFiles.length) {
+      dirData.forEach(directory => {
+        const { audioFiles, path, startIndex } = directory;
+        if (fileIndex >= startIndex && fileIndex < startIndex + audioFiles.length) {
           data.push({
-            dir: ddata.path,
-            file: ddata.audioFiles[fileIndex - ddata.startIndex],
-            sound: sound.key,
+            dir: path,
+            file: audioFiles[fileIndex - startIndex],
+            sound: soundTypeId,
           });
         }
       });
