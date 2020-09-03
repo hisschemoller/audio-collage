@@ -55,8 +55,13 @@ export default {
       .then(response => response.json())
       .then(sampleData => {
         sampleData.forEach(sound => sound.id = createUUID());
-        // const { score, tracks } = generateScore(getState(), sampleData);
-        const { score, tracks } = generateGridsScore(getState(), sampleData);
+        const drums = generateGridsScore(getState(), sampleData);
+        const samples = generateScore(getState(), sampleData);
+        const score = [ ...samples.score ];
+        const tracks = {
+          allIds: [ ...drums.tracks.allIds, ...samples.tracks.allIds ],
+          byId: { ...drums.tracks.byId, ...samples.tracks.byId },
+        };
         dispatch({ type: GENERATE, sampleData, score, tracks });
       });
       // .catch((error) => {

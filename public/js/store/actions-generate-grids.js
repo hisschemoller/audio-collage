@@ -1,5 +1,5 @@
 import { createUUID } from '../util/utils.js';
-import { sounds as soundNames, HAT, SNARE } from '../util/constants.js'
+import { sounds as soundTypes, HAT, SNARE } from '../util/constants.js'
 import { getDrums } from './selectors.js';
 import { createPattern as createGridsPattern } from '../grids/pattern-generator.js';
 
@@ -17,18 +17,18 @@ export function generateGridsScore(state, sampleData) {
   const swing = 56;
   const swingTime = (1 / 16) * ((swing - 50) / 100);
 
-  // create the tracks
-  soundNames.forEach((soundName, trackIndex) => {
-    if (drums[soundName]) {
-      const { duration, id, } = sampleData.find(sample => sample.sound === soundName);
+  // create the drum tracks
+  soundTypes.forEach((soundType, trackIndex) => {
+    if (drums[soundType]) {
+      const { duration, id, } = sampleData.find(sample => sample.sound === soundType);
       const trackId = createUUID();
 
       tracks.allIds.push(trackId);
       tracks.byId[trackId] = {
         gain: 1,
-        pan: soundName === HAT ? -0.2 : soundName === SNARE ? 0.2 : 0,
+        pan: soundType === HAT ? -0.2 : soundType === SNARE ? 0.2 : 0,
         playbackDuration: duration,
-        reverbSendGain: soundName === HAT ? 0.2 : soundName === SNARE ? 0.03 : 0,
+        reverbSendGain: soundType === HAT ? 0.2 : soundType === SNARE ? 0.03 : 0,
         sampleId: id,
         sampleStartOffset: 0,
         patterns: [],
@@ -43,8 +43,8 @@ export function generateGridsScore(state, sampleData) {
     const density = 127;
     const gridsPattern = createGridsPattern(xRandom, yRandom, randomness, density);
     
-    soundNames.forEach((soundName, trackIndex) => {
-      if (drums[soundName]) {
+    soundTypes.forEach((soundType, trackIndex) => {
+      if (drums[soundType]) {
         const pattern = gridsPattern.reduce((accumulator, step, index) => {
           if (step[trackIndex]) {
             let time = index / 32;
