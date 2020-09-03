@@ -9,8 +9,8 @@
 </head>
 <body>
 	<div id="top-row">
-		<div id="controls">
-			<div>
+		<div id="controls" class="panel">
+			<!-- <div>
 				<label for="file-import">Import project...</label>
 				<input type="file" multiple="false" id="file-import" />
 			</div>
@@ -22,23 +22,47 @@
 				<label for="controls__play">Play</label>
 				<input type="checkbox" id="controls__play" />
 			</div>
+			<input type="checkbox" id="play-check" class="toggle__check" /> -->
+			
+			<div class="panel__header">Controls</div>
+			<div class="panel__content">
+				<input type="file" multiple="false" id="file-import" class="file-import" />
+				<label for="file-import" class="btn" title="Import project...">
+					<span class="icon-open"></span>
+				</label>
+				<button id="file-export" class="btn" title="Export project...">
+					<span class="icon-save"></span>
+				</button>
+				<button id="controls__generate" class="btn" title="Generate">
+					<span class="icon-note"></span>
+				</button>
+				<input type="checkbox" id="controls__play" class="toggle__check" />
+				<label for="controls__play" class="toggle__label btn" title="Play/Stop">
+					<span class="icon-new" data-on="&#xe804;" data-off="&#xe802;"></span>
+				</label>
+			</div>
 		</div>
-		<div id="settings">
-			<h4>Settings</h4>
-			<div>
-				<label for="settings__loopduration">Loop duration</label>
-				<input type="number" id="settings__loopduration" />
-			</div>
-			<div>
-				<label for="settings__numsamples">Sample files</label>
-				<input type="number" id="settings__numsamples" />
-			</div>
-			<div>
-				<label for="settings__numtracks">Tracks</label>
-				<input type="number" id="settings__numtracks" />
+		<div id="settings" class="panel">
+			<div class="panel__header">Settings</div>
+			<div class="panel__content">
+				<div>
+					<label for="settings__loopduration">Loop duration</label>
+					<input type="number" id="settings__loopduration" />
+				</div>
+				<div>
+					<label for="settings__numsamples">Sample files</label>
+					<input type="number" id="settings__numsamples" />
+				</div>
+				<div>
+					<label for="settings__numtracks">Tracks</label>
+					<input type="number" id="settings__numtracks" />
+				</div>
 			</div>
 		</div>
-		<div id="info"></div>
+		<div id="info" class="panel">
+			<div class="panel__header">Samples</div>
+			<div class="panel__content"></div>
+		</div>
 	</div>
 	<div id="paths"></div>
 	
