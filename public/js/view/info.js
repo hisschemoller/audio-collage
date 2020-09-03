@@ -22,7 +22,7 @@ function handleStateChanges(e) {
  * General module setup.
  */
 export function setup() {
-  rootEl = document.querySelector('#info');
+  rootEl = document.querySelector('#info > .panel__content');
   document.addEventListener(STATE_CHANGE, handleStateChanges);
 }
 

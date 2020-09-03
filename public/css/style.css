@@ -1,5 +1,24 @@
 @import 'dialog.css';
 
+:root {
+  --bg-color: #eee;
+  --ui-bg-color: #ccc;
+  --panel-bg-color: #fff;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+  margin: 0;
+}
+body {
+  background-color: var(--bg-color);
+  font-family: sans-serif;
+}
+
+/************************
+ * Fonts and icons
+ ************************/
+
 @font-face {
   font-family: 'icomoon';
   src:  url('../fonts/icomoon/fonts/icomoon.eot?8ue2bf');
@@ -42,6 +61,11 @@
 .icon-stop:before {
   content: "\e804";
 }
+
+/************************
+ * UI
+ ************************/
+
 input[type='file'] {
 	height: 0.1px;
 	opacity: 0;
@@ -50,11 +74,6 @@ input[type='file'] {
     width: 0.1px;
 	z-index: -1;
 }
-
-/************************
- * UI
- ************************/
- 
 .btn {
     background-color: var(--btn-bg-color);
     border: none;
@@ -92,27 +111,33 @@ input[type='file'] {
   width: 40px;
 }
 
-*, *:before, *:after {
-  box-sizing: border-box;
-  margin: 0;
+#info th {
+  background-color: transparent;
 }
-body {
-  font-family: sans-serif;
+#info .panel__content {
+  padding: 0;
 }
+
+.panel {
+  margin: 10px;
+}
+.panel__header {
+  background-color: var(--ui-bg-color);
+  font-weight: normal;
+  padding: 5px 10px;
+  text-align: left;
+}
+.panel__content {
+  background-color: var(--panel-bg-color);
+  border: 1px solid var(--ui-bg-color);
+  padding: 10px;
+}
+
 #top-row {
   display: flex;
 }
-#controls {
-  border: 1px solid #999;
-  margin: 10px;
-  padding: 10px;
-}
-#settings {
-  border: 1px solid #999;
-  margin: 10px;
-  padding: 10px;
-}
-#settings > div {
+
+#settings > div > div {
   display: flex;
 }
 #settings label {
@@ -153,7 +178,7 @@ table {
   border: none; /* 1px solid #999; */
 }
 th {
-  background-color: #ccc;
+  background-color: var(--ui-bg-color);
   font-weight: normal;
   padding: 5px 10px;
   text-align: left;
