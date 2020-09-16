@@ -24,6 +24,10 @@ export default function memoize(state, action = {}, actions) {
   }
 }
 
+/**
+ * 
+ * @param {*} state 
+ */
 function setDrums(state) {
   const { directories } = state;
   Object.keys(drums).forEach(key => {

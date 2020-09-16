@@ -25,7 +25,7 @@ export default {
   buffersLoaded: () => ({ type: BUFFERS_LOADED }),
 
   DIRECTORY_ADD,
-  directoryAdd: sound => ({ type: DIRECTORY_ADD, id: createUUID(), sound }),
+  directoryAdd: type => ({ type: DIRECTORY_ADD, id: createUUID(), type }),
 
   DIRECTORY_PATH_CHANGE,
   directoryPathChange: (id, path) => ({ type: DIRECTORY_PATH_CHANGE, id, path }),

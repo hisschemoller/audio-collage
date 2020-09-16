@@ -87,11 +87,8 @@ function updateDirectories(state) {
           el.dataset.id = dirId;
           el.querySelector('.dir__path').value = path;
           el.querySelector('.dir__disable').checked = !isEnabled;
-          el.querySelector('.dir__path').addEventListener('keyup', e => {
-            if (e.keyCode === 13) {
-              e.target.blur();
-              dispatch(getActions().directoryPathChange(dirId, e.target.value));
-            }
+          el.querySelector('.dir__path').addEventListener('input', e => {
+            dispatch(getActions().directoryPathChange(dirId, e.target.value));
           });
           el.querySelector('.dir__delete').addEventListener('click', e => {
             dispatch(getActions().directoryRemove(dirId));
@@ -130,10 +127,11 @@ function updateDirectoriesContent(state) {
  * @param {Object} state Application state.
  */
 async function uploadState(state) {
-  const data = state.directories.allIds.reduce((accumulator, dirId) => {
-    const { isEnabled, path, sound } = state.directories.byId[dirId];
+  const { directories } = state;
+  const data = directories.allIds.reduce((accumulator, dirId) => {
+    const { isEnabled, path, type } = directories.byId[dirId];
     if (isEnabled && path !== '') {
-      return [ ...accumulator, { path, sound } ];
+      return [ ...accumulator, { path, type } ];
     }
     return [ ...accumulator ];
   }, []);

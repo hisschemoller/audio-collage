@@ -4,6 +4,27 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { getAudioDurationInSeconds } = require('get-audio-duration');
 
+/**
+ * allData: {
+ *  allIds: [ type. type, ... ],
+ *  byId: {
+ *    type: {
+ *      {
+ *        path,
+ *        audioFiles: [ fileName, fileName, ... ],
+ *      },
+ *      ...
+ *    }
+ *    type: {
+ *      ...
+ *    },
+ *    ...
+ *  },
+ * }
+ * 
+ */
+
+
 const app = express();
 const port = process.env.PORT || 3015;
 let allData = {
@@ -38,9 +59,12 @@ app.get('/sound', (req, res) => {
   res.sendFile(path.resolve(url));
 });
 
-// receive an array of directory path strings
+/**
+ * Receive an array of directory path strings.
+ * 
+ */
 app.post('/paths', (req, res) => {
-  console.log(req.body);
+  console.log('/paths, received data', req.body);
   getAllDirectories(req.body);
   res.send(req.body);
 });
@@ -126,7 +150,7 @@ function getAudioDuration(data) {
 
 /**
  * Iterate all directories.
- * @param {Array} dirs 
+ * @param {Array} dirs
  */
 function getAllDirectories(dirs) {
   allData = {
@@ -152,12 +176,12 @@ function getAllDirectories(dirs) {
  * @returns {Object} Promise.
  */
 function getAllFiles(dir) {
-  const { path, sound } = dir;
+  const { path, type } = dir;
   return new Promise((resolve, reject) => {
     let audioFiles = [];
     fs.readdir(path, (err, files) => {
       if (err) {
-        console.log('err', err);
+        console.log('Error: no such directory: ', path);
         reject();
       } else {
         files.forEach(filename => {
@@ -166,15 +190,17 @@ function getAllFiles(dir) {
           }
         });
 
-        if (!allData.allIds.includes(sound)) {
-          allData.allIds.push(sound);
-          allData.byId[sound] = {
+        // create entry for sound type if it didn't exist yet
+        if (!allData.allIds.includes(type)) {
+          allData.allIds.push(type);
+          allData.byId[type] = {
             dirData: [],
             numFiles: 0,
           };
         }
 
-        allData.byId[sound].dirData.push({ path, audioFiles, });
+        // add the sound
+        allData.byId[type].dirData.push({ path, audioFiles, });
         resolve();
       }
     });

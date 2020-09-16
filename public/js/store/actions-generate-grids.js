@@ -18,21 +18,24 @@ export function generateGridsScore(state, sampleData) {
   const swingTime = (1 / 16) * ((swing - 50) / 100);
 
   // create the drum tracks
-  soundTypes.forEach((soundType, trackIndex) => {
+  soundTypes.forEach((soundType) => {
     if (drums[soundType]) {
-      const { duration, id, } = sampleData.find(sample => sample.sound === soundType);
-      const trackId = createUUID();
-
-      tracks.allIds.push(trackId);
-      tracks.byId[trackId] = {
-        gain: 1,
-        pan: soundType === HAT ? -0.2 : soundType === SNARE ? 0.2 : 0,
-        playbackDuration: duration,
-        reverbSendGain: soundType === HAT ? 0.2 : soundType === SNARE ? 0.03 : 0,
-        sampleId: id,
-        sampleStartOffset: 0,
-        patterns: [],
-      };
+      const sound = sampleData.find(sample => sample.sound === soundType);
+      if (sound) {
+        const { duration, id, } = sound;
+        const trackId = createUUID();
+  
+        tracks.allIds.push(trackId);
+        tracks.byId[trackId] = {
+          gain: 1,
+          pan: soundType === HAT ? -0.2 : soundType === SNARE ? 0.2 : 0,
+          playbackDuration: duration,
+          reverbSendGain: soundType === HAT ? 0.2 : soundType === SNARE ? 0.03 : 0,
+          sampleId: id,
+          sampleStartOffset: 0,
+          patterns: [],
+        };
+      }
     }
   });
 
