@@ -65,8 +65,7 @@ app.get('/sound', (req, res) => {
  */
 app.post('/paths', (req, res) => {
   console.log('/paths, received data', req.body);
-  getAllDirectories(req.body);
-  res.send(req.body);
+  getAllDirectories(req.body, res);
 });
 
 /**
@@ -152,7 +151,7 @@ function getAudioDuration(data) {
  * Iterate all directories.
  * @param {Array} dirs
  */
-function getAllDirectories(dirs) {
+function getAllDirectories(dirs, response) {
   allData = {
     allIds: [],
     byId: {},
@@ -167,6 +166,8 @@ function getAllDirectories(dirs) {
         soundCategory.numFiles += dirData.audioFiles.length;
       });
     });
+
+    response.send(dirs);
   });
 }
 
@@ -176,19 +177,30 @@ function getAllDirectories(dirs) {
  * @returns {Object} Promise.
  */
 function getAllFiles(dir) {
+
+  // add to response data
+  dir.exists = true;
+  dir.numFiles = 0;
+
   const { path, type } = dir;
   return new Promise((resolve, reject) => {
     let audioFiles = [];
     fs.readdir(path, (err, files) => {
       if (err) {
         console.log('Error: no such directory: ', path);
+        dir.exists = false;
         reject();
       } else {
+
+        // get all audio filenames
         files.forEach(filename => {
           if ((/[^\s]+(\.(mp3|wav|aif))$/i).test(filename)) {
             audioFiles.push(filename);
           }
         });
+
+        // add number of files to response data
+        dir.numFiles = audioFiles.length;
 
         // create entry for sound type if it didn't exist yet
         if (!allData.allIds.includes(type)) {
@@ -199,7 +211,7 @@ function getAllFiles(dir) {
           };
         }
 
-        // add the sound
+        // add the sound data
         allData.byId[type].dirData.push({ path, audioFiles, });
         resolve();
       }

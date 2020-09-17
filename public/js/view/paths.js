@@ -1,5 +1,5 @@
 import { dispatch, getActions, getState, STATE_CHANGE, } from '../store/store.js';
-import { sounds } from '../util/constants.js'
+import { types } from '../util/constants.js'
 
 let rootEl, listEl, addBtn;
 let resetKeyCombo = [];
@@ -10,20 +10,18 @@ let resetKeyCombo = [];
 export function setup() {
   rootEl = document.querySelector('#paths');
 
-  sounds.forEach(sound => {
+  types.forEach(type => {
     const template = document.querySelector('#template-dirs');
     const clone = template.content.cloneNode(true);
     const el = clone.firstElementChild;
-    el.dataset.sound = sound;
-    el.querySelector('.dirs__label').textContent = `${sound} audio folder locations`;
+    el.dataset.type = type;
+    el.querySelector('.dirs__label').textContent = `${type} audio folder locations`;
     el.querySelector('.dirs__add').addEventListener('click', e => {
-      dispatch(getActions().directoryAdd(sound));
+      dispatch(getActions().directoryAdd(type));
     });
     rootEl.appendChild(el);
   });
 
-  // listEl = rootEl.querySelector('#dirs__list');
-  // addBtn = rootEl.querySelector('#dirs__add');
   addEventListeners();
 }
 
@@ -32,7 +30,7 @@ function addEventListeners() {
 }
 
 /**
- * HAndle application state changes.
+ * Handle application state changes.
  * @param {Event} e Custom event.
  */
 function handleStateChanges(e) {
@@ -60,9 +58,10 @@ function handleStateChanges(e) {
  * @param {Object} state Application state.
  */
 function updateDirectories(state) {
+  console.log(state);
   const { directories, } = state;
-  sounds.forEach(sound => {
-    const dirsEl = rootEl.querySelector(`.dirs[data-sound='${sound}'`);
+  types.forEach(type => {
+    const dirsEl = rootEl.querySelector(`.dirs[data-type='${type}'`);
     const listEl = dirsEl.querySelector('.dirs__list');
     const dirEls = listEl.querySelectorAll('.dir');
 
@@ -78,8 +77,8 @@ function updateDirectories(state) {
 
     // create all directories that don't exist yet
     directories.allIds.forEach(dirId => {
-      const { isEnabled, path, sound: dirSound} = directories.byId[dirId];
-      if (sound === dirSound) {
+      const { isEnabled, path, type: dirSound} = directories.byId[dirId];
+      if (type === dirSound) {
         if (!listEl.querySelector(`.dir[data-id="${dirId}"]`)) {
           const template = document.querySelector('#template-dir');
           const clone = template.content.cloneNode(true);
@@ -115,8 +114,8 @@ function updateDirectories(state) {
 function updateDirectoriesContent(state) {
   const { directories, } = state;
   directories.allIds.forEach(dirId => {
-    const { isEnabled, path, sound } = directories.byId[dirId];
-    const dirEl = rootEl.querySelector(`.dirs[data-sound='${sound}'] .dir[data-id='${dirId}']`);
+    const { isEnabled, path, type } = directories.byId[dirId];
+    const dirEl = rootEl.querySelector(`.dirs[data-type='${type}'] .dir[data-id='${dirId}']`);
     dirEl.querySelector('.dir__disable').checked = !isEnabled;
     dirEl.querySelector('.dir__path').value = path;
   });
@@ -128,6 +127,8 @@ function updateDirectoriesContent(state) {
  */
 async function uploadState(state) {
   const { directories } = state;
+
+  // create paths data for server
   const data = directories.allIds.reduce((accumulator, dirId) => {
     const { isEnabled, path, type } = directories.byId[dirId];
     if (isEnabled && path !== '') {
@@ -136,7 +137,8 @@ async function uploadState(state) {
     return [ ...accumulator ];
   }, []);
 
-  const result = fetch('/paths', {
+  // send updated paths data to server
+  await fetch('/paths', {
     method: 'POST',
     cache: 'no-cache',
     credentials: 'same-origin',
@@ -145,5 +147,9 @@ async function uploadState(state) {
     },
     referrerPolicy: 'no-referrer',
     body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(result => {
+    console.log('result', result);
   });
 }

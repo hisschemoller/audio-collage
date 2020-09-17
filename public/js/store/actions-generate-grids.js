@@ -1,5 +1,5 @@
 import { createUUID } from '../util/utils.js';
-import { sounds as soundTypes, HAT, SNARE } from '../util/constants.js'
+import { types as soundTypes, HAT, SNARE } from '../util/constants.js'
 import { getDrums } from './selectors.js';
 import { createPattern as createGridsPattern } from '../grids/pattern-generator.js';
 
