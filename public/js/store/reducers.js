@@ -138,6 +138,29 @@ export default function reduce(state = initialState, action, actions = {}) {
         }
       };
 
+    case actions.PATHS_ADD_SERVER_DATA: {
+      const { data } = action;
+      const { directories } = state;
+      return { 
+        ...state,
+        directories: {
+          allIds: [ ...directories.allIds ],
+          byId: directories.allIds.reduce((accumulator, dirId) => {
+            const directory = directories.byId[dirId];
+            const { exists, numFiles, } = data.find(d => d.path === directory.path);
+            return {
+              ...accumulator,
+              [dirId]: {
+                ...directory,
+                isExists: exists,
+                numFiles,
+              },
+            };
+          }, {}),
+        },
+      };
+    }
+
     case actions.SET_PROJECT:
       return { ...state, ...action.state };
 

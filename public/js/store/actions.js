@@ -11,6 +11,7 @@ const DIRECTORY_REMOVE = 'DIRECTORY_REMOVE';
 const DIRECTORY_TOGGLE_ENABLE = 'DIRECTORY_TOGGLE_ENABLE';
 const GENERATE = 'GENERATE';
 const NEW_PROJECT = 'NEW_PROJECT';
+const PATHS_ADD_SERVER_DATA = 'PATHS_ADD_SERVER_DATA';
 const SET_PROJECT = 'SET_PROJECT';
 const SET_SETTING = 'SET_SETTING';
 const SET_TRANSPORT = 'SET_TRANSPORT';
@@ -72,6 +73,9 @@ export default {
 
   NEW_PROJECT,
   newProject: () => ({ type: NEW_PROJECT }),
+
+  PATHS_ADD_SERVER_DATA,
+  pathsAddServerData: data => ({ type: PATHS_ADD_SERVER_DATA, data }),
 
   projectExport: () => {
     return (dispatch, getState) => {

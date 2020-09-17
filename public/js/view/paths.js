@@ -50,6 +50,10 @@ function handleStateChanges(e) {
       updateDirectoriesContent(state);
       uploadState(state);
       break;
+    
+    case actions.PATHS_ADD_SERVER_DATA:
+      updateDirectoriesContent(state);
+      break;
   }
 }
 
@@ -114,10 +118,16 @@ function updateDirectories(state) {
 function updateDirectoriesContent(state) {
   const { directories, } = state;
   directories.allIds.forEach(dirId => {
-    const { isEnabled, path, type } = directories.byId[dirId];
+    const { isEnabled, isExists, numFiles, path, type } = directories.byId[dirId];
     const dirEl = rootEl.querySelector(`.dirs[data-type='${type}'] .dir[data-id='${dirId}']`);
     dirEl.querySelector('.dir__disable').checked = !isEnabled;
     dirEl.querySelector('.dir__path').value = path;
+
+    if (isExists) {
+      dirEl.classList.remove('dir--invalid');
+    } else {
+      dirEl.classList.add('dir--invalid');
+    }
   });
 }
 
@@ -150,6 +160,6 @@ async function uploadState(state) {
   })
   .then(response => response.json())
   .then(result => {
-    console.log('result', result);
+    dispatch(getActions().pathsAddServerData(result));
   });
 }

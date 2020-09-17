@@ -170,6 +170,11 @@ input[type='file'] {
 .dirs__list td:nth-of-type(3) {
   width: 70px;
 }
+.dir--invalid .dir__path {
+  background-color: #fdd;
+  border: 1px solid #f00;
+  color: #f00;
+}
 .dir__path {
   width: 100%;
 }
